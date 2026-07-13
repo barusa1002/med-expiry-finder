@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>医薬品 使用期限検索ポータル</title>
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --text: #1a2233;
+    --sub: #5b6575;
+    --accent: #1565c0;
+    --accent-soft: #e3f0fd;
+    --border: #dde3ec;
+    --star: #f0a500;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151c;
+      --card: #1c212b;
+      --text: #e8ecf3;
+      --sub: #9aa4b5;
+      --accent: #64a8e8;
+      --accent-soft: #1e3350;
+      --border: #323a48;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 16px 16px 48px; }
+  header { padding: 20px 0 4px; }
+  h1 { font-size: 1.35rem; }
+  header p { color: var(--sub); font-size: .85rem; margin-top: 4px; }
+
+  .lot-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin: 16px 0 12px;
+  }
+  .lot-box label { font-size: .8rem; font-weight: 600; color: var(--sub); display: block; margin-bottom: 6px; }
+  .lot-row { display: flex; gap: 8px; }
+  .lot-row input {
+    flex: 1;
+    font-size: 1.1rem;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    letter-spacing: .05em;
+  }
+  .lot-row button {
+    padding: 10px 16px;
+    font-size: .95rem;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .lot-row button:active { opacity: .8; }
+  .lot-hint { font-size: .75rem; color: var(--sub); margin-top: 6px; }
+
+  .search-row input {
+    width: 100%;
+    font-size: 1rem;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+
+  h2 {
+    font-size: .85rem;
+    color: var(--sub);
+    margin: 18px 2px 8px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+  .grid { display: grid; gap: 8px; }
+
+  .company {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color .15s;
+  }
+  .company:hover { border-color: var(--accent); }
+  .company .info { flex: 1; min-width: 0; }
+  .company .name { font-weight: 700; font-size: 1rem; }
+  .company .note { font-size: .75rem; color: var(--sub); }
+  .company .arrow { color: var(--accent); font-size: 1.1rem; flex-shrink: 0; }
+  .star-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    color: var(--border);
+    flex-shrink: 0;
+    padding: 4px;
+    line-height: 1;
+  }
+  .star-btn.on { color: var(--star); }
+
+  .empty { color: var(--sub); font-size: .9rem; padding: 12px 4px; }
+
+  .gs1-note {
+    margin-top: 28px;
+    background: var(--accent-soft);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: .85rem;
+  }
+  .gs1-note strong { display: block; margin-bottom: 4px; }
+  footer { margin-top: 20px; font-size: .75rem; color: var(--sub); }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text);
+    color: var(--bg);
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-size: .85rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>💊 医薬品 使用期限検索ポータル</h1>
+    <p>製薬会社を選ぶと、その会社の使用期限検索ページが開きます。</p>
+  </header>
+
+  <div class="lot-box">
+    <label for="lot">ロット番号（製造番号）メモ</label>
+    <div class="lot-row">
+      <input id="lot" type="text" placeholder="例: A123B" autocomplete="off">
+      <button id="copyBtn">コピー</button>
+    </div>
+    <p class="lot-hint">先にここへ入力してコピーしておくと、各社サイトで貼り付けるだけで検索できます。</p>
+  </div>
+
+  <div class="search-row">
+    <input id="filter" type="search" placeholder="会社名で絞り込み（例: さわい、トーワ）" autocomplete="off">
+  </div>
+
+  <section id="favSection" hidden>
+    <h2>★ よく使う</h2>
+    <div class="grid" id="favGrid"></div>
+  </section>
+
+  <section>
+    <h2>ジェネリック医薬品メーカー</h2>
+    <div class="grid" id="genericGrid"></div>
+  </section>
+
+  <section>
+    <h2>先発・その他のメーカー</h2>
+    <div class="grid" id="brandGrid"></div>
+  </section>
+
+  <section>
+    <h2>専用検索ページなし（問い合わせ対応）</h2>
+    <div class="grid" id="contactGrid"></div>
+  </section>
+
+  <div class="gs1-note">
+    <strong>📷 ワンポイント</strong>
+    医薬品の箱や調剤包装に印刷されている GS1 バーコードには、有効期限とロット番号がそのまま入っています。バーコードリーダーやスマホのGS1対応アプリで読み取れば、メーカーサイトで検索しなくても期限を確認できます。
+  </div>
+
+  <footer>
+    ※ 各社サイトのURLは変更されることがあります。リンク切れの場合は「会社名 + 使用期限検索」で検索してください。<br>
+    ※ 掲載のない会社は使用期限検索サービスを提供していないか、URLが未登録です。
+  </footer>
+</div>
+
+<div class="toast" id="toast">コピーしました</div>
+
+<script>
+const COMPANIES = [
+  // --- ジェネリック中心 ---
+  { name: "沢井製薬", kana: "さわい サワイ sawai", url: "https://med.sawai.co.jp/product/lot_search/", note: "製品名＋製造番号（完全一致）", cat: "generic" },
+  { name: "東和薬品", kana: "とうわ トーワ towa", url: "https://med.towayakuhin.co.jp/medical/product/search.php", note: "製品検索ページ内から期限確認", cat: "generic" },
+  { name: "日医工", kana: "にちいこう nichiiko", url: "https://www.nichiiko.co.jp/medicine/expiration", note: "製品名＋製造番号（前方一致4桁以上）／武田テバ製品も対応", cat: "generic" },
+  { name: "日本ジェネリック", kana: "にほんじぇねりっく JG", url: "https://medical.nihon-generic.co.jp/medical/lot_search/", note: "製品名＋製造番号をセットで入力", cat: "generic" },
+  { name: "第一三共エスファ", kana: "だいいちさんきょう エスファ DSEP", url: "https://med.daiichisankyo-ep.co.jp/products/kigen.php?certification=1", note: "製品名またはロット番号で検索", cat: "generic" },
+  { name: "共和薬品工業", kana: "きょうわ アメル amel", url: "https://www.amel-di.com/medical/di/lot", note: "「アメル」ブランド", cat: "generic" },
+  { name: "キョーリンリメディオ", kana: "きょーりん 杏林", url: "https://www.med.kyorin-rmd.com/product/search_limit/", note: "", cat: "generic" },
+  { name: "ニプロ", kana: "にぷろ nipro", url: "https://med.nipro.co.jp/ph_product_limit", note: "製品名＋ロット番号", cat: "generic" },
+  { name: "サンド", kana: "さんど sandoz", url: "https://www.sandoz.jp/medical/product-lot-search/", note: "", cat: "generic" },
+  { name: "全星薬品工業", kana: "ぜんせい ZE zensei", url: "https://zensei-med.jp/lot_search/", note: "「ZE」ブランド", cat: "generic" },
+  // --- 先発・その他 ---
+  { name: "塩野義製薬", kana: "しおのぎ シオノギ shionogi", url: "https://expiration-search.shionogi.co.jp/", note: "ロット番号＋製品名", cat: "brand" },
+  { name: "MSD", kana: "えむえすでぃー msd", url: "https://www.msdconnect.jp/product-product-lotnum/", note: "MSD Connect内", cat: "brand" },
+  { name: "エーザイ", kana: "えーざい eisai", url: "https://medical.eisai.jp/search-lot", note: "", cat: "brand" },
+  { name: "住友ファーマ", kana: "すみとも 大日本住友", url: "https://sumitomo-pharma.jp/product/search_by_expdate/", note: "旧・大日本住友製薬", cat: "brand" },
+  { name: "興和", kana: "こうわ コーワ kowa", url: "https://medical.kowa.co.jp/medical/product/lot-search/", note: "製品名＋ロット番号（前方一致2文字以上）", cat: "brand" },
+  { name: "アステラス製薬", kana: "あすてらす astellas", url: "https://amn.astellas.jp/common/expiration-search", note: "アステラスメディカルネット内", cat: "brand" },
+  { name: "田辺三菱製薬", kana: "たなべみつびし mt-pharma", url: "https://medical.mt-pharma.co.jp/di/termssearch/", note: "ロット別使用期限検索", cat: "brand" },
+  { name: "協和キリン", kana: "きょうわきりん kyowa kirin", url: "https://medical.kyowakirin.co.jp/druginfo/lot/index.html", note: "", cat: "brand" },
+  { name: "Meiji Seika ファルマ", kana: "めいじ meiji", url: "https://meiji-medical-net.com/product/lotsearch/", note: "Meiji Medical Net内", cat: "brand" },
+  { name: "日本新薬", kana: "にほんしんやく nippon-shinyaku", url: "https://med.nippon-shinyaku.co.jp/product/expiration/", note: "会員登録（medパス）が必要な場合あり", cat: "brand" },
+  { name: "鳥居薬品", kana: "とりい torii", url: "https://www.torii.co.jp/iyakuDB/medical_info/expirationdate.html", note: "", cat: "brand" },
+  { name: "旭化成ファーマ", kana: "あさひかせい asahi", url: "https://akp-pharma-digital.com/products/shiyokigen", note: "Pharma DIGITAL内", cat: "brand" },
+  { name: "日本イーライリリー", kana: "いーらいりりー lilly", url: "https://medical.lilly.com/jp/home/lot_info", note: "ロット番号別", cat: "brand" },
+  { name: "大正製薬", kana: "たいしょう taisho", url: "https://medical.taisho.co.jp/medical/di/lotsearch/", note: "", cat: "brand" },
+  { name: "三和化学研究所", kana: "さんわ skk", url: "https://med.skk-net.com/supplies/expirations/index.html", note: "", cat: "brand" },
+  { name: "トーアエイヨー", kana: "とーあえいよー toaeiyo", url: "https://cardio-1.toaeiyo.co.jp/ExpirationDate/", note: "", cat: "brand" },
+  // --- 専用検索ページなし（問い合わせ・チャット対応） ---
+  { name: "武田薬品工業", kana: "たけだ takeda", url: "https://www.takedamed.com/", note: "専用検索なし。Takeda Medical siteから問い合わせ", cat: "contact" },
+  { name: "ファイザー", kana: "ふぁいざー pfizer", url: "https://www.pfizerpro.jp/", note: "専用検索なし。PfizerProのチャットボット・問い合わせで対応（要ログイン）", cat: "contact" },
+  { name: "大塚製薬", kana: "おおつか otsuka", url: "https://www.otsuka-elibrary.jp/product/index.html", note: "専用検索なし。大塚e-libraryから問い合わせ", cat: "contact" },
+];
+
+const favKey = "kigen-portal-favs";
+let favs = new Set(JSON.parse(localStorage.getItem(favKey) || "[]"));
+
+const favSection = document.getElementById("favSection");
+const favGrid = document.getElementById("favGrid");
+const genericGrid = document.getElementById("genericGrid");
+const brandGrid = document.getElementById("brandGrid");
+const contactGrid = document.getElementById("contactGrid");
+const filterInput = document.getElementById("filter");
+
+function card(c) {
+  const a = document.createElement("a");
+  a.className = "company";
+  a.href = c.url;
+  a.target = "_blank";
+  a.rel = "noopener";
+  const isFav = favs.has(c.name);
+  a.innerHTML = `
+    <button class="star-btn ${isFav ? "on" : ""}" aria-label="お気に入り">★</button>
+    <div class="info">
+      <div class="name">${c.name}</div>
+      ${c.note ? `<div class="note">${c.note}</div>` : ""}
+    </div>
+    <div class="arrow">➜</div>`;
+  a.querySelector(".star-btn").addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    favs.has(c.name) ? favs.delete(c.name) : favs.add(c.name);
+    localStorage.setItem(favKey, JSON.stringify([...favs]));
+    render();
+  });
+  return a;
+}
+
+function render() {
+  const q = filterInput.value.trim().toLowerCase();
+  const match = (c) => !q || c.name.toLowerCase().includes(q) || c.kana.toLowerCase().includes(q);
+
+  favGrid.innerHTML = "";
+  genericGrid.innerHTML = "";
+  brandGrid.innerHTML = "";
+  contactGrid.innerHTML = "";
+
+  const favList = COMPANIES.filter((c) => favs.has(c.name) && match(c));
+  favSection.hidden = favList.length === 0;
+  favList.forEach((c) => favGrid.appendChild(card(c)));
+
+  const rest = COMPANIES.filter((c) => !favs.has(c.name) && match(c));
+  rest.filter((c) => c.cat === "generic").forEach((c) => genericGrid.appendChild(card(c)));
+  rest.filter((c) => c.cat === "brand").forEach((c) => brandGrid.appendChild(card(c)));
+  rest.filter((c) => c.cat === "contact").forEach((c) => contactGrid.appendChild(card(c)));
+
+  if (!genericGrid.children.length) genericGrid.innerHTML = '<p class="empty">該当なし</p>';
+  if (!brandGrid.children.length) brandGrid.innerHTML = '<p class="empty">該当なし</p>';
+  if (!contactGrid.children.length) contactGrid.innerHTML = '<p class="empty">該当なし</p>';
+}
+
+filterInput.addEventListener("input", render);
+
+const toast = document.getElementById("toast");
+document.getElementById("copyBtn").addEventListener("click", async () => {
+  const v = document.getElementById("lot").value.trim();
+  if (!v) return;
+  try {
+    await navigator.clipboard.writeText(v);
+    toast.textContent = "コピーしました: " + v;
+  } catch {
+    toast.textContent = "コピーできませんでした（手動で選択してください）";
+  }
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 1800);
+});
+
+render();
+</script>
+</body>
+</html>
