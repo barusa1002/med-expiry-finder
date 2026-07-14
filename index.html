@@ -40,6 +40,33 @@
   h1 { font-size: 1.5rem; line-height: 1.4; }
   .site-header p { font-size: .95rem; opacity: .92; margin-top: 4px; }
 
+  /* ---------- タブ ---------- */
+  .tabs {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 16px;
+    display: flex;
+    gap: 8px;
+    background: var(--blue);
+  }
+  .tab-btn {
+    flex: 1;
+    max-width: 260px;
+    padding: 12px 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: inherit;
+    border: none;
+    border-radius: 12px 12px 0 0;
+    background: rgba(255,255,255,.18);
+    color: #fff;
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    background: var(--bg);
+    color: var(--blue);
+  }
+
   /* ---------- 使い方ステップ ---------- */
   .steps {
     display: grid;
@@ -263,11 +290,19 @@
 <header class="site-header">
   <div class="inner">
     <h1>💊 医薬品 使用期限検索ポータル</h1>
-    <p>持参薬のPTPシートに印字されたロット番号から、使用期限を調べるためのリンク集です。</p>
+    <p>持参薬のPTPシートから「使用期限の確認」と「錠剤の鑑別」ができるリンク集です。</p>
   </div>
 </header>
 
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="expiry">📅 使用期限検索</button>
+  <button class="tab-btn" data-tab="identify">🔎 錠剤鑑別</button>
+</nav>
+
 <div class="wrap">
+
+<!-- ================= 使用期限検索タブ ================= -->
+<div id="tab-expiry">
 
   <div class="steps">
     <div class="step">
@@ -340,6 +375,82 @@
     ※ 各社サイトのURLは変更されることがあります。リンク切れの場合は「会社名 ＋ 使用期限検索」で検索してください。<br>
     ※ ★マークを押すとお気に入りに登録され、次回から一番上に表示されます（この端末のブラウザにのみ保存されます）。
   </footer>
+
+</div><!-- /tab-expiry -->
+
+<!-- ================= 錠剤鑑別タブ ================= -->
+<div id="tab-identify" hidden>
+
+  <div class="steps">
+    <div class="step">
+      <div class="num">1</div>
+      <div><div class="t">刻印を読む</div><div class="d">錠剤・PTPシートに印字された識別コード（例: TW483、KW231）を確認</div></div>
+    </div>
+    <div class="step">
+      <div class="num">2</div>
+      <div><div class="t">コードを入力</div><div class="d">下の欄に識別コードを入力する</div></div>
+    </div>
+    <div class="step">
+      <div class="num">3</div>
+      <div><div class="t">検索する</div><div class="d">Google検索ボタンか、下の鑑別サイトで調べる</div></div>
+    </div>
+  </div>
+
+  <div class="memo-box">
+    <h2>🔎 識別コードから調べる</h2>
+    <div class="memo-grid">
+      <div class="memo-field">
+        <label for="code">識別コード（刻印・印字）</label>
+        <div class="memo-row">
+          <input id="code" type="text" placeholder="例: TW483" autocomplete="off">
+          <button data-copy="code">コピー</button>
+        </div>
+      </div>
+      <div class="memo-field">
+        <label>&nbsp;</label>
+        <div class="memo-row">
+          <button id="googleBtn" style="flex:1; padding:12px 14px;">🔍 Googleで鑑別検索</button>
+        </div>
+      </div>
+    </div>
+    <p class="memo-hint">※ 識別コードは錠剤本体の刻印またはPTPシートの印字にあります。メーカー略号（TW=東和、KW=興和 など）＋数字の組み合わせが一般的です。</p>
+  </div>
+
+  <section>
+    <div class="sec-head"><h2>錠剤鑑別に使えるサイト</h2><span class="badge brand">識別コード検索</span></div>
+    <p class="sec-desc">コピーした識別コードを、以下のサイトの検索欄に貼り付けて調べられます。</p>
+    <div class="grid">
+      <a class="company" href="https://www.pmda.go.jp/PmdaSearch/iyakuSearch/" target="_blank" rel="noopener">
+        <div class="info">
+          <div class="name">PMDA 添付文書検索</div>
+          <div class="note">公的DB。検索項目を「組成・性状」にして識別コードを入力</div>
+        </div>
+        <div class="open">検索ページへ ▶</div>
+      </a>
+      <a class="company" href="https://www.kegg.jp/medicus-bin/search_drug" target="_blank" rel="noopener">
+        <div class="info">
+          <div class="name">KEGG MEDICUS</div>
+          <div class="note">添付文書の全文から検索できる統合データベース</div>
+        </div>
+        <div class="open">検索ページへ ▶</div>
+      </a>
+      <a class="company" href="https://www.data-index.co.jp/medsearch/ethicaldrugs/" target="_blank" rel="noopener">
+        <div class="info">
+          <div class="name">データインデックス 医薬品検索</div>
+          <div class="note">識別コード欄あり。画像付きで確認しやすい</div>
+        </div>
+        <div class="open">検索ページへ ▶</div>
+      </a>
+    </div>
+  </section>
+
+  <div class="gs1-note">
+    <strong>⚠️ 鑑別時の注意</strong>
+    識別コードだけでは規格違い・剤形違いを取り違えるおそれがあります。検索結果は必ず錠剤の色・形・大きさ・割線の有無と照合し、判断に迷う場合は複数のデータベースで確認してください。
+  </div>
+
+</div><!-- /tab-identify -->
+
 </div>
 
 <div class="toast" id="toast">コピーしました</div>
@@ -439,6 +550,28 @@ function render() {
 }
 
 filterInput.addEventListener("input", render);
+
+// ---------- タブ切り替え ----------
+const tabExpiry = document.getElementById("tab-expiry");
+const tabIdentify = document.getElementById("tab-identify");
+document.querySelectorAll(".tab-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    const isExpiry = btn.dataset.tab === "expiry";
+    tabExpiry.hidden = !isExpiry;
+    tabIdentify.hidden = isExpiry;
+    window.scrollTo({ top: 0 });
+  });
+});
+
+// ---------- Google鑑別検索 ----------
+document.getElementById("googleBtn").addEventListener("click", () => {
+  const code = document.getElementById("code").value.trim();
+  if (!code) { document.getElementById("code").focus(); return; }
+  const q = encodeURIComponent(`錠剤 識別コード "${code}"`);
+  window.open(`https://www.google.com/search?q=${q}`, "_blank", "noopener");
+});
 
 const toast = document.getElementById("toast");
 document.querySelectorAll("[data-copy]").forEach((btn) => {
