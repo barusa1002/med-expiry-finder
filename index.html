@@ -397,7 +397,7 @@
   </div>
 
   <div class="memo-box">
-    <h2>🔎 識別コードから調べる</h2>
+    <h2>🔎 識別コード（記号・番号）から調べる</h2>
     <div class="memo-grid">
       <div class="memo-field">
         <label for="code">識別コード（刻印・印字）</label>
@@ -409,17 +409,48 @@
       <div class="memo-field">
         <label>&nbsp;</label>
         <div class="memo-row">
-          <button id="googleBtn" style="flex:1; padding:12px 14px;">🔍 Googleで鑑別検索</button>
+          <button id="kigoBtn" style="flex:1; padding:12px 8px;">💊 ハイパー薬事典で検索</button>
+          <button id="googleBtn" style="flex:1; padding:12px 8px; background:#5f6b7a;">🔍 Googleで検索</button>
         </div>
       </div>
     </div>
-    <p class="memo-hint">※ 識別コードは錠剤本体の刻印またはPTPシートの印字にあります。メーカー略号（TW=東和、KW=興和 など）＋数字の組み合わせが一般的です。</p>
+    <p class="memo-hint">※ 識別コードは錠剤本体の刻印またはPTPシートの印字にあります。英字と数字の1組（例: TW483、KW 231）を半角で入力してください。本体（錠剤）側のアルファベットを優先。</p>
   </div>
+
+  <div class="memo-box">
+    <h2>💊 薬の名前から調べる（ハイパー薬事典）</h2>
+    <div class="memo-grid">
+      <div class="memo-field">
+        <label for="kanaName">薬の名前（全角カタカナ・漢字で3文字以上）</label>
+        <div class="memo-row">
+          <input id="kanaName" type="text" placeholder="例: ロキソニン" autocomplete="off">
+          <button id="kanaBtn">名前で検索</button>
+        </div>
+      </div>
+    </div>
+    <p class="memo-hint">※ 先頭一致検索です。効能・副作用・識別コード・薬価の比較まで確認できます。</p>
+  </div>
+
+  <!-- ハイパー薬事典へのPOST送信用の隠しフォーム -->
+  <form id="kigoForm" action="http://www.jah.ne.jp/~kako/cgi-bin/dwm_kigo_search.cgi/~kako/" method="POST" target="_blank" accept-charset="Shift_JIS" hidden>
+    <input type="hidden" name="kigo_ait">
+    <input type="hidden" name="start_file_no" value="0">
+  </form>
+  <form id="kanaForm" action="http://www.jah.ne.jp/~kako/cgi-bin/dwm_kana_search.cgi/~kako/" method="POST" target="_blank" accept-charset="Shift_JIS" hidden>
+    <input type="hidden" name="kana_ait">
+  </form>
 
   <section>
     <div class="sec-head"><h2>錠剤鑑別に使えるサイト</h2><span class="badge brand">識別コード検索</span></div>
     <p class="sec-desc">コピーした識別コードを、以下のサイトの検索欄に貼り付けて調べられます。</p>
     <div class="grid">
+      <a class="company" href="http://www.jah.ne.jp/~kako/frame_dwm_search.html" target="_blank" rel="noopener">
+        <div class="info">
+          <div class="name">ハイパー薬事典（おくすり110番）</div>
+          <div class="note">記号・名前から検索。上の入力欄からボタン一発でも検索可能</div>
+        </div>
+        <div class="open">検索ページへ ▶</div>
+      </a>
       <a class="company" href="https://www.pmda.go.jp/PmdaSearch/iyakuSearch/" target="_blank" rel="noopener">
         <div class="info">
           <div class="name">PMDA 添付文書検索</div>
@@ -446,7 +477,8 @@
 
   <div class="gs1-note">
     <strong>⚠️ 鑑別時の注意</strong>
-    識別コードだけでは規格違い・剤形違いを取り違えるおそれがあります。検索結果は必ず錠剤の色・形・大きさ・割線の有無と照合し、判断に迷う場合は複数のデータベースで確認してください。
+    識別コードだけでは規格違い・剤形違いを取り違えるおそれがあります。検索結果は必ず錠剤の色・形・大きさ・割線の有無と照合し、判断に迷う場合は複数のデータベースで確認してください。<br><br>
+    ※ ハイパー薬事典は古いサイト（http通信）のため、検索時にブラウザが「保護されていない通信」の確認画面を出すことがあります。送信するのは入力した記号・名前だけなので、「このまま送信」で検索できます。
   </div>
 
 </div><!-- /tab-identify -->
@@ -571,6 +603,35 @@ document.getElementById("googleBtn").addEventListener("click", () => {
   if (!code) { document.getElementById("code").focus(); return; }
   const q = encodeURIComponent(`錠剤 識別コード "${code}"`);
   window.open(`https://www.google.com/search?q=${q}`, "_blank", "noopener");
+});
+
+// ---------- ハイパー薬事典 記号検索 ----------
+document.getElementById("kigoBtn").addEventListener("click", () => {
+  const code = document.getElementById("code").value.trim();
+  if (!code) { document.getElementById("code").focus(); return; }
+  const form = document.getElementById("kigoForm");
+  form.elements["kigo_ait"].value = code;
+  form.submit();
+});
+
+// ---------- ハイパー薬事典 名前検索 ----------
+document.getElementById("kanaBtn").addEventListener("click", () => {
+  const name = document.getElementById("kanaName").value.trim();
+  const isShortException = ["PL", "SG", "SM", "AM", "KM", "ロブ", "ナパ"].includes(name.toUpperCase());
+  if (!name || (name.length < 3 && !isShortException)) {
+    alert("薬の名前は3文字以上で入力してください（全角カタカナ・漢字）");
+    document.getElementById("kanaName").focus();
+    return;
+  }
+  const form = document.getElementById("kanaForm");
+  form.elements["kana_ait"].value = name;
+  form.submit();
+});
+document.getElementById("kanaName").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") document.getElementById("kanaBtn").click();
+});
+document.getElementById("code").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") document.getElementById("kigoBtn").click();
 });
 
 const toast = document.getElementById("toast");
