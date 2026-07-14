@@ -361,8 +361,8 @@
   </section>
 
   <section>
-    <div class="sec-head"><h2>検索ページのないメーカー</h2><span class="badge contact">問い合わせ対応</span></div>
-    <p class="sec-desc">以下のメーカーは使用期限の検索ページを提供していません。医療関係者向けサイトの問い合わせ窓口・チャットをご利用ください。</p>
+    <div class="sec-head"><h2>検索ページのないメーカー</h2><span class="badge contact">チャットボット・問い合わせ</span></div>
+    <p class="sec-desc">以下のメーカーは使用期限の検索ページを提供していませんが、チャットボットや問い合わせ窓口で確認できます。リンクを押すと該当ページが開きます。</p>
     <div class="grid" id="contactGrid"></div>
   </section>
 
@@ -518,9 +518,9 @@ const COMPANIES = [
   { name: "三和化学研究所", kana: "さんわ skk", url: "https://med.skk-net.com/supplies/expirations/index.html", note: "", cat: "brand" },
   { name: "トーアエイヨー", kana: "とーあえいよー toaeiyo", url: "https://cardio-1.toaeiyo.co.jp/ExpirationDate/", note: "", cat: "brand" },
   // --- 専用検索ページなし（問い合わせ・チャット対応） ---
-  { name: "武田薬品工業", kana: "たけだ takeda", url: "https://www.takedamed.com/", note: "Takeda Medical siteから問い合わせ", cat: "contact" },
-  { name: "ファイザー", kana: "ふぁいざー pfizer", url: "https://www.pfizerpro.jp/", note: "PfizerProのチャットボット・問い合わせで対応（要ログイン）", cat: "contact" },
-  { name: "大塚製薬", kana: "おおつか otsuka", url: "https://www.otsuka-elibrary.jp/product/index.html", note: "大塚e-libraryから問い合わせ", cat: "contact" },
+  { name: "武田薬品工業", kana: "たけだ takeda", url: "https://www.takedamed.com/contact", note: "チャットボット「DI-bot」の「使用有効期限を調べる」で確認できる", cat: "contact" },
+  { name: "ファイザー", kana: "ふぁいざー pfizer", url: "https://www.pfizerpro.jp/", note: "ログイン後、チャットボット「マイボ」→「製品の使用期限」にロット番号を入力", cat: "contact" },
+  { name: "大塚製薬", kana: "おおつか otsuka", url: "https://www.otsuka.co.jp/contacts/", note: "チャットボットなし。医薬情報センターへ電話で問い合わせ", cat: "contact" },
 ];
 
 const favKey = "kigen-portal-favs";
@@ -540,7 +540,7 @@ function card(c) {
   a.target = "_blank";
   a.rel = "noopener";
   const isFav = favs.has(c.name);
-  const openLabel = c.cat === "contact" ? "サイトへ" : "検索ページへ";
+  const openLabel = c.cat === "contact" ? "問い合わせへ" : "検索ページへ";
   a.innerHTML = `
     <button class="star-btn ${isFav ? "on" : ""}" aria-label="お気に入り" title="お気に入りに登録">★</button>
     <div class="info">
