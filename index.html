@@ -418,17 +418,24 @@
   </div>
 
   <div class="memo-box">
-    <h2>💊 薬の名前から調べる（ハイパー薬事典）</h2>
+    <h2>💊 薬の名前から調べる</h2>
     <div class="memo-grid">
       <div class="memo-field">
-        <label for="kanaName">薬の名前（全角カタカナ・漢字で3文字以上）</label>
+        <label for="kanaName">薬の名前</label>
         <div class="memo-row">
           <input id="kanaName" type="text" placeholder="例: ロキソニン" autocomplete="off">
-          <button id="kanaBtn">名前で検索</button>
+          <button data-copy="kanaName">コピー</button>
+        </div>
+      </div>
+      <div class="memo-field">
+        <label>&nbsp;</label>
+        <div class="memo-row">
+          <button id="pmdaNameBtn" style="flex:1; padding:12px 8px;">🏛️ PMDAで検索（基本）</button>
+          <button id="kanaBtn" style="flex:1; padding:12px 8px; background:#5f6b7a;">💊 ハイパー薬事典で検索</button>
         </div>
       </div>
     </div>
-    <p class="memo-hint">※ 先頭一致検索です。効能・副作用・識別コード・薬価の比較まで確認できます。</p>
+    <p class="memo-hint">※ まずコピーしてから「PMDAで検索」を押してください。開いた添付文書検索ページの「一般名・販売名」欄に貼り付けて検索します（公的データベースなので情報の信頼性が高いです）。ハイパー薬事典はボタン一発で直接検索結果が開き、薬価比較なども見られます。</p>
   </div>
 
   <!-- ハイパー薬事典へのPOST送信用の隠しフォーム -->
@@ -442,19 +449,19 @@
 
   <section>
     <div class="sec-head"><h2>錠剤鑑別に使えるサイト</h2><span class="badge brand">識別コード検索</span></div>
-    <p class="sec-desc">コピーした識別コードを、以下のサイトの検索欄に貼り付けて調べられます。</p>
+    <p class="sec-desc">コピーした識別コード・薬の名前を、以下のサイトの検索欄に貼り付けて調べられます。</p>
     <div class="grid">
+      <a class="company" href="https://www.pmda.go.jp/PmdaSearch/iyakuSearch/" target="_blank" rel="noopener">
+        <div class="info">
+          <div class="name">PMDA 添付文書検索（基本）</div>
+          <div class="note">公的DB。名前は「一般名・販売名」欄、識別コードは検索項目を「組成・性状」にして入力</div>
+        </div>
+        <div class="open">検索ページへ ▶</div>
+      </a>
       <a class="company" href="http://www.jah.ne.jp/~kako/frame_dwm_search.html" target="_blank" rel="noopener">
         <div class="info">
           <div class="name">ハイパー薬事典（おくすり110番）</div>
           <div class="note">記号・名前から検索。上の入力欄からボタン一発でも検索可能</div>
-        </div>
-        <div class="open">検索ページへ ▶</div>
-      </a>
-      <a class="company" href="https://www.pmda.go.jp/PmdaSearch/iyakuSearch/" target="_blank" rel="noopener">
-        <div class="info">
-          <div class="name">PMDA 添付文書検索</div>
-          <div class="note">公的DB。検索項目を「組成・性状」にして識別コードを入力</div>
         </div>
         <div class="open">検索ページへ ▶</div>
       </a>
@@ -632,6 +639,18 @@ document.getElementById("kanaName").addEventListener("keydown", (e) => {
 });
 document.getElementById("code").addEventListener("keydown", (e) => {
   if (e.key === "Enter") document.getElementById("kigoBtn").click();
+});
+
+// ---------- PMDAで検索（コピーしてからページを開く） ----------
+document.getElementById("pmdaNameBtn").addEventListener("click", async () => {
+  const input = document.getElementById("kanaName");
+  const v = input.value.trim();
+  if (!v) { input.focus(); return; }
+  try { await navigator.clipboard.writeText(v); } catch {}
+  toast.textContent = `「${v}」をコピーしました。開いたPMDAのページで「一般名・販売名」欄に貼り付けてください`;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 3200);
+  window.open("https://www.pmda.go.jp/PmdaSearch/iyakuSearch/", "_blank", "noopener");
 });
 
 const toast = document.getElementById("toast");
