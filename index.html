@@ -418,24 +418,17 @@
   </div>
 
   <div class="memo-box">
-    <h2>💊 薬の名前から調べる</h2>
+    <h2>💊 薬の名前から調べる（ハイパー薬事典）</h2>
     <div class="memo-grid">
       <div class="memo-field">
-        <label for="kanaName">薬の名前</label>
+        <label for="kanaName">薬の名前（全角カタカナ・漢字で3文字以上）</label>
         <div class="memo-row">
           <input id="kanaName" type="text" placeholder="例: ロキソニン" autocomplete="off">
-          <button data-copy="kanaName">コピー</button>
-        </div>
-      </div>
-      <div class="memo-field">
-        <label>&nbsp;</label>
-        <div class="memo-row">
-          <button id="pmdaNameBtn" style="flex:1; padding:12px 8px;">🏛️ PMDAで検索（基本）</button>
-          <button id="kanaBtn" style="flex:1; padding:12px 8px; background:#5f6b7a;">💊 ハイパー薬事典で検索</button>
+          <button id="kanaBtn">名前で検索</button>
         </div>
       </div>
     </div>
-    <p class="memo-hint">※ まずコピーしてから「PMDAで検索」を押してください。開いた添付文書検索ページの「一般名・販売名」欄に貼り付けて検索します（公的データベースなので情報の信頼性が高いです）。ハイパー薬事典はボタン一発で直接検索結果が開き、薬価比較なども見られます。</p>
+    <p class="memo-hint">※ 先頭一致検索です。効能・副作用・識別コード・薬価の比較まで確認できます。</p>
   </div>
 
   <!-- ハイパー薬事典へのPOST送信用の隠しフォーム -->
@@ -639,18 +632,6 @@ document.getElementById("kanaName").addEventListener("keydown", (e) => {
 });
 document.getElementById("code").addEventListener("keydown", (e) => {
   if (e.key === "Enter") document.getElementById("kigoBtn").click();
-});
-
-// ---------- PMDAで検索（コピーしてからページを開く） ----------
-document.getElementById("pmdaNameBtn").addEventListener("click", async () => {
-  const input = document.getElementById("kanaName");
-  const v = input.value.trim();
-  if (!v) { input.focus(); return; }
-  try { await navigator.clipboard.writeText(v); } catch {}
-  toast.textContent = `「${v}」をコピーしました。開いたPMDAのページで「一般名・販売名」欄に貼り付けてください`;
-  toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 3200);
-  window.open("https://www.pmda.go.jp/PmdaSearch/iyakuSearch/", "_blank", "noopener");
 });
 
 const toast = document.getElementById("toast");
