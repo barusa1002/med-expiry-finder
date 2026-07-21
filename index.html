@@ -3,7 +3,81 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>医薬品 使用期限検索ポータル</title>
+<title>持参薬チェック｜使用期限検索・錠剤鑑別ツール【薬剤師向け無料】</title>
+<meta name="description" content="持参薬の残薬調整に。ロット番号から使用期限を調べる全国の製薬会社検索ページと、識別コードから薬品名を鑑別できるサイトを1つにまとめた、薬剤師・医療従事者向けの無料ツールです。検索結果はPDF報告書として印刷・保存できます。">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jisanyaku-check.com/">
+
+<!-- Open Graph / SNSシェア用 -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://jisanyaku-check.com/">
+<meta property="og:site_name" content="持参薬チェック">
+<meta property="og:title" content="持参薬チェック｜使用期限検索・錠剤鑑別ツール【薬剤師向け無料】">
+<meta property="og:description" content="持参薬の残薬調整に。ロット番号から使用期限を調べる全国の製薬会社検索ページと、識別コードから薬品名を鑑別できるサイトを1つにまとめた、薬剤師・医療従事者向けの無料ツールです。">
+<meta property="og:image" content="https://jisanyaku-check.com/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="持参薬チェック｜使用期限検索・錠剤鑑別ツール【薬剤師向け無料】">
+<meta name="twitter:description" content="持参薬の残薬調整に。使用期限検索・錠剤鑑別を1つにまとめた薬剤師向け無料ツールです。">
+<meta name="twitter:image" content="https://jisanyaku-check.com/ogp.png">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "持参薬チェック",
+  "url": "https://jisanyaku-check.com/",
+  "description": "医薬品の使用期限検索と錠剤鑑別を1つにまとめた、薬剤師・医療従事者向けの無料Webツール。持参薬の残薬調整業務を支援します。",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "Any",
+  "inLanguage": "ja",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "使用期限はこのサイトで自動的にわかりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "いいえ。各製薬会社は使用期限を公開APIで提供していないため、このサイトは各社の使用期限検索ページへのリンク集です。製品名とロット番号をコピーして、開いたページで検索してください。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "錠剤の識別コードから薬品名を調べられますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "はい。錠剤鑑別タブから、PMDA添付文書検索やハイパー薬事典などのデータベースに、識別コードや薬の名前をワンタップで検索できます。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "確認した結果を報告書として保存できますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "はい。報告書タブで確認結果（製品名・ロット番号・使用期限・鑑別結果など）を記録し、ブラウザの印刷機能からPDFとして保存・印刷できます。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "利用は無料ですか？会員登録は必要ですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全に無料で、会員登録も不要です。お気に入りや報告書の内容はお使いの端末のブラウザにのみ保存されます。"
+      }
+    }
+  ]
+}
+</script>
 <style>
   :root {
     --bg: #eef2f6;
@@ -616,6 +690,29 @@
 
 </div><!-- /tab-report -->
 
+</div>
+
+<div class="wrap">
+  <section id="about-site">
+    <div class="sec-head"><h2>このサイトについて</h2></div>
+    <p class="sec-desc" style="margin-bottom:14px;">
+      「持参薬チェック」は、薬剤師・医療従事者が残薬調整の際に持参薬（PTPシート）を確認するための無料ツールです。ロット番号（製造番号）から使用期限を調べる全国の製薬会社の検索ページ、そして錠剤の識別コード・刻印から薬品名を鑑別できるデータベースへのリンクを1か所にまとめています。確認した結果はその場でPDF報告書として印刷・保存できます。会員登録は不要で、完全無料でご利用いただけます。
+    </p>
+  </section>
+
+  <section id="faq">
+    <div class="sec-head"><h2>よくある質問</h2></div>
+    <div class="memo-box">
+      <p style="font-weight:700;">Q. 使用期限はこのサイトで自動的にわかりますか？</p>
+      <p class="sec-desc" style="margin:4px 0 14px;">A. いいえ。各製薬会社は使用期限を公開APIで提供していないため、このサイトは各社の使用期限検索ページへのリンク集です。製品名とロット番号をコピーして、開いたページで検索してください。</p>
+      <p style="font-weight:700;">Q. 錠剤の識別コードから薬品名を調べられますか？</p>
+      <p class="sec-desc" style="margin:4px 0 14px;">A. はい。錠剤鑑別タブから、PMDA添付文書検索やハイパー薬事典などのデータベースに、識別コードや薬の名前をワンタップで検索できます。</p>
+      <p style="font-weight:700;">Q. 確認した結果を報告書として保存できますか？</p>
+      <p class="sec-desc" style="margin:4px 0 14px;">A. はい。報告書タブで確認結果（製品名・ロット番号・使用期限・鑑別結果など）を記録し、ブラウザの印刷機能からPDFとして保存・印刷できます。</p>
+      <p style="font-weight:700;">Q. 利用は無料ですか？会員登録は必要ですか？</p>
+      <p class="sec-desc" style="margin:4px 0 0;">A. 完全に無料で、会員登録も不要です。お気に入りや報告書の内容はお使いの端末のブラウザにのみ保存されます。</p>
+    </div>
+  </section>
 </div>
 
 <div class="toast" id="toast">コピーしました</div>
