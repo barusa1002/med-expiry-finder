@@ -243,6 +243,39 @@
 
   .empty { color: var(--sub); font-size: .95rem; padding: 8px 4px; }
 
+  /* ---------- 報告書テーブル ---------- */
+  .report-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(20, 40, 70, .06);
+    font-size: .92rem;
+  }
+  .report-table th, .report-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    white-space: nowrap;
+  }
+  .report-table td.memo-cell { white-space: normal; min-width: 160px; }
+  .report-table th {
+    background: var(--blue-pale);
+    color: var(--blue);
+    font-size: .82rem;
+  }
+  .report-table tbody tr:last-child td { border-bottom: none; }
+  .row-del {
+    background: none;
+    border: none;
+    color: #b23b3b;
+    font-size: .85rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+
   /* ---------- 補足 ---------- */
   .gs1-note {
     background: var(--green-pale);
@@ -297,6 +330,7 @@
 <nav class="tabs">
   <button class="tab-btn active" data-tab="expiry">📅 使用期限検索</button>
   <button class="tab-btn" data-tab="identify">🔎 錠剤鑑別</button>
+  <button class="tab-btn" data-tab="report">🖨️ 報告書</button>
 </nav>
 
 <div class="wrap">
@@ -338,6 +372,7 @@
       </div>
     </div>
     <p class="memo-hint">※ 多くのメーカーは「製品名＋ロット番号」のセット入力が必要です。先にコピーしておくと、開いた先で貼り付けるだけで検索できます。</p>
+    <button id="toReportBtn" style="margin-top:12px; width:100%; padding:12px; background:var(--green);">📝 この製品を報告書に追加（使用期限は確認後に入力）</button>
   </div>
 
   <div class="filter-box">
@@ -483,6 +518,77 @@
 
 </div><!-- /tab-identify -->
 
+<!-- ================= 報告書タブ ================= -->
+<div id="tab-report" hidden>
+
+  <div class="steps">
+    <div class="step">
+      <div class="num">1</div>
+      <div><div class="t">確認結果を入力</div><div class="d">調べた製品名・ロット番号・使用期限を記録</div></div>
+    </div>
+    <div class="step">
+      <div class="num">2</div>
+      <div><div class="t">一覧にたまる</div><div class="d">複数の薬をまとめて記録できる</div></div>
+    </div>
+    <div class="step">
+      <div class="num">3</div>
+      <div><div class="t">印刷・PDF保存</div><div class="d">きれいな表形式の報告書として出力</div></div>
+    </div>
+  </div>
+
+  <div class="memo-box">
+    <h2>📝 確認結果を記録する</h2>
+    <div class="memo-grid">
+      <div class="memo-field">
+        <label for="repProduct">製品名</label>
+        <div class="memo-row"><input id="repProduct" type="text" placeholder="例: アムロジピン錠5mg「サワイ」" autocomplete="off"></div>
+      </div>
+      <div class="memo-field">
+        <label for="repLot">ロット番号</label>
+        <div class="memo-row"><input id="repLot" type="text" placeholder="例: A123B" autocomplete="off"></div>
+      </div>
+      <div class="memo-field">
+        <label for="repExpiry">確認した使用期限</label>
+        <div class="memo-row"><input id="repExpiry" type="text" placeholder="例: 2027-03" autocomplete="off"></div>
+      </div>
+      <div class="memo-field">
+        <label for="repMaker">メーカー（任意）</label>
+        <div class="memo-row"><input id="repMaker" type="text" placeholder="例: 沢井製薬" autocomplete="off"></div>
+      </div>
+    </div>
+    <div class="memo-field" style="margin-top:14px;">
+      <label for="repMemo">メモ（任意）</label>
+      <div class="memo-row"><input id="repMemo" type="text" placeholder="例: 残薬調整で持参、シート判読困難のため名前検索で確認" autocomplete="off"></div>
+    </div>
+    <button id="addReportBtn" style="margin-top:14px; width:100%; padding:12px;">＋ 一覧に追加</button>
+    <p class="memo-hint">※ 使用期限は各社サイト・チャットボットで確認した結果をそのまま入力してください（自動取得はできません）。</p>
+  </div>
+
+  <section>
+    <div class="sec-head"><h2>確認済み一覧</h2><span class="badge brand" id="reportCount">0件</span></div>
+    <div style="overflow-x:auto;">
+      <table class="report-table">
+        <thead>
+          <tr><th>製品名</th><th>ロット番号</th><th>使用期限</th><th>メーカー</th><th>メモ</th><th class="noprint"></th></tr>
+        </thead>
+        <tbody id="reportBody"></tbody>
+      </table>
+    </div>
+    <p class="empty" id="reportEmpty">まだ追加された項目はありません</p>
+  </section>
+
+  <div class="memo-row" style="margin-top:8px;">
+    <button id="printReportBtn" style="flex:1; padding:14px;">🖨️ 報告書を印刷 / PDF保存</button>
+    <button id="clearReportBtn" style="background:#b23b3b; padding:14px 18px;">全て削除</button>
+  </div>
+
+  <div class="gs1-note" style="margin-top:20px;">
+    <strong>📌 このリストについて</strong>
+    入力した内容はこの端末のブラウザにのみ保存されます（他の端末や他の人とは共有されません）。印刷ボタンを押すとブラウザの印刷機能が開き、そこで「PDFに保存」を選べばPDFファイルとして保存できます。
+  </div>
+
+</div><!-- /tab-report -->
+
 </div>
 
 <div class="toast" id="toast">コピーしました</div>
@@ -584,17 +690,18 @@ function render() {
 filterInput.addEventListener("input", render);
 
 // ---------- タブ切り替え ----------
-const tabExpiry = document.getElementById("tab-expiry");
-const tabIdentify = document.getElementById("tab-identify");
+const tabPanels = {
+  expiry: document.getElementById("tab-expiry"),
+  identify: document.getElementById("tab-identify"),
+  report: document.getElementById("tab-report"),
+};
+function switchTab(name) {
+  document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
+  Object.entries(tabPanels).forEach(([key, el]) => { el.hidden = key !== name; });
+  window.scrollTo({ top: 0 });
+}
 document.querySelectorAll(".tab-btn").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
-    const isExpiry = btn.dataset.tab === "expiry";
-    tabExpiry.hidden = !isExpiry;
-    tabIdentify.hidden = isExpiry;
-    window.scrollTo({ top: 0 });
-  });
+  btn.addEventListener("click", () => switchTab(btn.dataset.tab));
 });
 
 // ---------- Google鑑別検索 ----------
@@ -651,6 +758,150 @@ document.querySelectorAll("[data-copy]").forEach((btn) => {
     setTimeout(() => toast.classList.remove("show"), 1800);
   });
 });
+
+// ---------- 報告書 ----------
+const reportKey = "kigen-portal-report";
+let reportEntries = JSON.parse(localStorage.getItem(reportKey) || "[]");
+
+const reportBody = document.getElementById("reportBody");
+const reportEmpty = document.getElementById("reportEmpty");
+const reportCount = document.getElementById("reportCount");
+
+function saveReport() {
+  localStorage.setItem(reportKey, JSON.stringify(reportEntries));
+}
+
+function escapeHtml(s) {
+  const div = document.createElement("div");
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+function reportRender() {
+  reportBody.innerHTML = "";
+  reportEntries.forEach((e) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escapeHtml(e.product) || "-"}</td>
+      <td>${escapeHtml(e.lot) || "-"}</td>
+      <td>${escapeHtml(e.expiry) || "-"}</td>
+      <td>${escapeHtml(e.maker) || "-"}</td>
+      <td class="memo-cell">${escapeHtml(e.memo) || ""}</td>
+      <td class="noprint"><button class="row-del" data-id="${e.id}">削除</button></td>`;
+    reportBody.appendChild(tr);
+  });
+  reportEmpty.hidden = reportEntries.length > 0;
+  reportCount.textContent = reportEntries.length + "件";
+  reportBody.querySelectorAll(".row-del").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      reportEntries = reportEntries.filter((e) => String(e.id) !== btn.dataset.id);
+      saveReport();
+      reportRender();
+    });
+  });
+}
+
+function addReportEntry(product, lot, expiry, maker, memo) {
+  reportEntries.push({
+    id: Date.now() + Math.random(),
+    product: product || "",
+    lot: lot || "",
+    expiry: expiry || "",
+    maker: maker || "",
+    memo: memo || "",
+  });
+  saveReport();
+  reportRender();
+}
+
+document.getElementById("addReportBtn").addEventListener("click", () => {
+  const product = document.getElementById("repProduct").value.trim();
+  const lot = document.getElementById("repLot").value.trim();
+  if (!product && !lot) {
+    document.getElementById("repProduct").focus();
+    return;
+  }
+  addReportEntry(
+    product,
+    lot,
+    document.getElementById("repExpiry").value.trim(),
+    document.getElementById("repMaker").value.trim(),
+    document.getElementById("repMemo").value.trim()
+  );
+  ["repProduct", "repLot", "repExpiry", "repMaker", "repMemo"].forEach((id) => { document.getElementById(id).value = ""; });
+  document.getElementById("repProduct").focus();
+});
+
+document.getElementById("clearReportBtn").addEventListener("click", () => {
+  if (reportEntries.length === 0) return;
+  if (!confirm("報告書の一覧をすべて削除します。よろしいですか？")) return;
+  reportEntries = [];
+  saveReport();
+  reportRender();
+});
+
+document.getElementById("toReportBtn").addEventListener("click", () => {
+  const product = document.getElementById("drug").value.trim();
+  const lot = document.getElementById("lot").value.trim();
+  if (!product && !lot) {
+    document.getElementById("drug").focus();
+    return;
+  }
+  addReportEntry(product, lot, "", "", "");
+  toast.textContent = "報告書に追加しました（使用期限はあとで報告書タブから入力してください）";
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2600);
+});
+
+document.getElementById("printReportBtn").addEventListener("click", () => {
+  if (reportEntries.length === 0) {
+    alert("報告書に項目がありません。先に確認結果を追加してください。");
+    return;
+  }
+  const today = new Date();
+  const dateStr = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+  const rows = reportEntries.map((e, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td>${escapeHtml(e.product) || "-"}</td>
+      <td>${escapeHtml(e.lot) || "-"}</td>
+      <td>${escapeHtml(e.expiry) || "-"}</td>
+      <td>${escapeHtml(e.maker) || "-"}</td>
+      <td>${escapeHtml(e.memo) || ""}</td>
+    </tr>`).join("");
+
+  const html = `<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8"><title>医薬品 使用期限確認 報告書</title>
+<style>
+  body { font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo", sans-serif; color: #1f2733; padding: 24px; }
+  h1 { font-size: 1.4rem; border-bottom: 3px solid #0b6bcb; padding-bottom: 10px; }
+  .meta { display:flex; justify-content: space-between; margin: 14px 0 20px; font-size: .9rem; color: #444; }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  th, td { border: 1px solid #999; padding: 8px 10px; text-align: left; }
+  th { background: #e8f1fb; }
+  .sign { margin-top: 40px; display: flex; gap: 60px; font-size: .95rem; }
+  .sign .line { border-bottom: 1px solid #333; display: inline-block; width: 180px; margin-left: 10px; }
+  @media print { body { padding: 0; } }
+</style></head>
+<body>
+  <h1>医薬品 使用期限確認 報告書</h1>
+  <div class="meta"><span>確認日: ${dateStr}</span><span>件数: ${reportEntries.length}件</span></div>
+  <table>
+    <thead><tr><th>No.</th><th>製品名</th><th>ロット番号</th><th>使用期限</th><th>メーカー</th><th>メモ</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <div class="sign">確認者：<span class="line"></span></div>
+</body></html>`;
+
+  const win = window.open("", "_blank");
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  win.print();
+});
+
+reportRender();
 
 render();
 </script>
