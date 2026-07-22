@@ -222,6 +222,26 @@
   .memo-row button:hover { background: var(--blue-dark); }
   .memo-hint { font-size: .82rem; color: var(--sub); margin-top: 10px; }
 
+  .action-btn {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: inherit;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .action-btn.green { background: var(--green); }
+  .action-btn.green:hover { background: #157a3f; }
+  .action-btn.blue { background: var(--blue); }
+  .action-btn.blue:hover { background: var(--blue-dark); }
+
   /* ---------- 絞り込み ---------- */
   .filter-box { position: relative; margin-bottom: 24px; }
   .filter-box .icon {
@@ -469,7 +489,7 @@
       </div>
     </div>
     <p class="memo-hint">※ 多くのメーカーは「製品名＋ロット番号」のセット入力が必要です。先にコピーしておくと、開いた先で貼り付けるだけで検索できます。</p>
-    <button id="toReportBtn" style="margin-top:12px; width:100%; padding:12px; background:var(--green);">📝 この製品を報告書に追加（使用期限は確認後に入力）</button>
+    <button id="toReportBtn" class="action-btn green">📝 この製品を報告書に追加（使用期限は確認後に入力）</button>
   </div>
 
   <div class="filter-box">
@@ -561,7 +581,7 @@
       </div>
     </div>
     <p class="memo-hint">※ 先頭一致検索です。効能・副作用・識別コード・薬価の比較まで確認できます。</p>
-    <button id="toReportBtnIdentify" style="margin-top:12px; width:100%; padding:12px; background:var(--green);">📝 この鑑別結果を報告書に追加（結果は確認後に入力）</button>
+    <button id="toReportBtnIdentify" class="action-btn green">📝 この鑑別結果を報告書に追加（結果は確認後に入力）</button>
   </div>
 
   <!-- ハイパー薬事典へのPOST送信用の隠しフォーム -->
@@ -662,7 +682,7 @@
       <label for="repMemo">メモ（任意）</label>
       <div class="memo-row"><input id="repMemo" type="text" placeholder="例: 残薬調整で持参、シート判読困難のため名前検索で確認" autocomplete="off"></div>
     </div>
-    <button id="addReportBtn" style="margin-top:14px; width:100%; padding:12px;">＋ 一覧に追加</button>
+    <button id="addReportBtn" class="action-btn blue">＋ 一覧に追加</button>
     <p class="memo-hint" id="repHint">※ 使用期限は各社サイト・チャットボットで確認した結果をそのまま入力してください（自動取得はできません）。</p>
   </div>
 
