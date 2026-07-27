@@ -2,7 +2,10 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b6bcb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>持参薬チェック｜医薬品使用期限検索・錠剤鑑別ツール【薬剤師向け無料】</title>
 <meta name="description" content="医薬品使用期限検索と錠剤鑑別を1つにまとめた、薬剤師・医療従事者向けの無料ツールです。持参薬の残薬調整に。ロット番号から使用期限を調べる全国の製薬会社検索ページと、識別コードから薬品名を鑑別できるデータベースへのリンクを集約。検索結果はPDF報告書として印刷・保存できます。">
 <meta name="robots" content="index, follow">
@@ -109,7 +112,7 @@
   .site-header {
     background: var(--blue);
     color: #fff;
-    padding: 22px 16px 20px;
+    padding: calc(22px + env(safe-area-inset-top)) 16px 20px;
   }
   .site-header .inner { max-width: 968px; margin: 0 auto; }
   h1 { font-size: 1.5rem; line-height: 1.4; }
@@ -409,7 +412,7 @@
   /* ---------- トースト ---------- */
   .toast {
     position: fixed;
-    bottom: 28px;
+    bottom: calc(28px + env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
     background: #223047;
