@@ -702,7 +702,7 @@
       <button type="button" class="kind-btn" data-kind="identify">🔎 錠剤鑑別</button>
     </div>
     <div class="memo-grid">
-      <div class="memo-field">
+      <div class="memo-field" id="repProductField">
         <label for="repProduct">製品名</label>
         <div class="memo-row"><input id="repProduct" type="text" placeholder="例: アムロジピン錠5mg「サワイ」" autocomplete="off"></div>
       </div>
@@ -1187,6 +1187,7 @@ function applyKindLabels(kind) {
   document.getElementById("repProduct").placeholder = L.productPh;
   document.getElementById("repLot").placeholder = L.lotPh;
   document.getElementById("repExpiry").placeholder = L.expiryPh;
+  document.getElementById("repProductField").hidden = kind === "identify";
 }
 document.querySelectorAll(".kind-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -1237,8 +1238,9 @@ function addReportEntry(kind, product, lot, expiry, memo) {
 document.getElementById("addReportBtn").addEventListener("click", () => {
   const product = document.getElementById("repProduct").value.trim();
   const lot = document.getElementById("repLot").value.trim();
+  const firstField = currentKind === "identify" ? "repLot" : "repProduct";
   if (!product && !lot) {
-    document.getElementById("repProduct").focus();
+    document.getElementById(firstField).focus();
     return;
   }
   addReportEntry(
@@ -1249,7 +1251,7 @@ document.getElementById("addReportBtn").addEventListener("click", () => {
     document.getElementById("repMemo").value.trim()
   );
   ["repProduct", "repLot", "repExpiry", "repMemo"].forEach((id) => { document.getElementById(id).value = ""; });
-  document.getElementById("repProduct").focus();
+  document.getElementById(firstField).focus();
 });
 
 document.getElementById("clearReportBtn").addEventListener("click", () => {
