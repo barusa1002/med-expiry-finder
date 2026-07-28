@@ -511,6 +511,20 @@
     </div>
     <p class="memo-hint" id="makerLookupHint">※ 厚生労働省の薬価基準収載品目リスト（約1万品目）から検索します。PTPシートに製薬会社名が書かれていない・読み取れないときにお使いください。</p>
     <div id="makerLookupResults"></div>
+    <div id="makerLookupRecord" hidden>
+      <p class="memo-hint" id="makerLookupSelected" style="margin-top:16px; font-weight:700; color:var(--text);"></p>
+      <div class="memo-grid">
+        <div class="memo-field">
+          <label for="makerLookupLot">ロット番号（製造番号）</label>
+          <div class="memo-row"><input id="makerLookupLot" type="text" placeholder="例: A123B" autocomplete="off"></div>
+        </div>
+        <div class="memo-field">
+          <label for="makerLookupExpiry">確認した使用期限</label>
+          <div class="memo-row"><input id="makerLookupExpiry" type="text" placeholder="例: 2027-03" autocomplete="off"></div>
+        </div>
+      </div>
+      <button id="makerLookupAddReportBtn" class="action-btn green">📝 報告書に追加</button>
+    </div>
   </div>
 
   <div class="memo-box">
@@ -1065,12 +1079,31 @@ function renderMakerResults(query) {
       }
       toast.classList.add("show");
       setTimeout(() => toast.classList.remove("show"), 3200);
+
+      selectedDrugName = dName;
+      selectedDrugMaker = company ? company.name : dMaker;
+      document.getElementById("makerLookupSelected").textContent = `選択中: ${dName}（${dMaker}）`;
+      document.getElementById("makerLookupRecord").hidden = false;
     });
     list.appendChild(btn);
   });
   makerLookupResults.innerHTML = "";
   makerLookupResults.appendChild(list);
 }
+
+let selectedDrugName = "";
+let selectedDrugMaker = "";
+document.getElementById("makerLookupAddReportBtn").addEventListener("click", () => {
+  if (!selectedDrugName) return;
+  const lot = document.getElementById("makerLookupLot").value.trim();
+  const expiry = document.getElementById("makerLookupExpiry").value.trim();
+  addReportEntry("expiry", selectedDrugName, lot, expiry, selectedDrugMaker, "");
+  toast.textContent = "報告書に追加しました";
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2000);
+  document.getElementById("makerLookupLot").value = "";
+  document.getElementById("makerLookupExpiry").value = "";
+});
 
 makerLookupInput.addEventListener("focus", () => {
   if (!drugsData) {
