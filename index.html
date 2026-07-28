@@ -608,6 +608,11 @@
       </div>
     </div>
     <p class="memo-hint">※ 識別コードは錠剤本体の刻印またはPTPシートの印字にあります。英字と数字の1組（例: TW483、KW 231）を半角で入力してください。本体（錠剤）側のアルファベットを優先。</p>
+    <div class="memo-field" style="margin-top:14px;">
+      <label for="identifyConfirmedName">確認した薬品名（任意）</label>
+      <div class="memo-row"><input id="identifyConfirmedName" type="text" placeholder="例: ロキソプロフェンNa錠60mg「トーワ」" autocomplete="off"></div>
+    </div>
+    <button id="toReportBtnIdentify" class="action-btn green">📝 この鑑別結果を報告書に追加</button>
   </div>
 
   <div class="memo-box">
@@ -622,7 +627,6 @@
       </div>
     </div>
     <p class="memo-hint">※ 先頭一致検索です。効能・副作用・識別コード・薬価の比較まで確認できます。</p>
-    <button id="toReportBtnIdentify" class="action-btn green">📝 この鑑別結果を報告書に追加（結果は確認後に入力）</button>
   </div>
 
   <!-- ハイパー薬事典へのPOST送信用の隠しフォーム -->
@@ -1279,15 +1283,16 @@ document.getElementById("toReportBtn").addEventListener("click", () => {
 
 document.getElementById("toReportBtnIdentify").addEventListener("click", () => {
   const code = document.getElementById("code").value.trim();
-  const name = document.getElementById("kanaName").value.trim();
-  if (!code && !name) {
+  const confirmedName = document.getElementById("identifyConfirmedName").value.trim();
+  if (!code && !confirmedName) {
     document.getElementById("code").focus();
     return;
   }
-  addReportEntry("identify", name, code, "", "");
-  toast.textContent = "報告書に追加しました（鑑別結果はあとで報告書タブから入力してください）";
+  addReportEntry("identify", "", code, confirmedName, "");
+  toast.textContent = confirmedName ? "報告書に追加しました" : "報告書に追加しました（鑑別結果はあとで報告書タブから入力してください）";
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 2600);
+  document.getElementById("identifyConfirmedName").value = "";
 });
 
 document.getElementById("printReportBtn").addEventListener("click", () => {
