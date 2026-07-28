@@ -822,6 +822,9 @@ const COMPANIES = [
   { name: "ニプロ", kana: "にぷろ nipro", url: "https://med.nipro.co.jp/ph_product_limit", note: "製品名＋ロット番号", cat: "generic" },
   { name: "サンド", kana: "さんど sandoz", url: "https://www.sandoz.jp/medical/product-lot-search/", note: "", cat: "generic" },
   { name: "全星薬品工業", kana: "ぜんせい ZE zensei", url: "https://zensei-med.jp/lot_search/", note: "「ZE」ブランド", cat: "generic" },
+  { name: "高田製薬", kana: "たかた takata", url: "https://www.takata-seiyaku.co.jp/medical/lotsearch.html", note: "製品名＋ロット番号", cat: "generic" },
+  { name: "辰巳化学", kana: "たつみ tatsumi", url: "https://www.tatsumi-kagaku.com/public/info_medical/list.php?submit_expiration_list=1", note: "", cat: "generic" },
+  { name: "扶桑薬品工業", kana: "ふそう fuso", url: "https://www.fuso-pharm.co.jp/med/ph/expiration/", note: "製品名＋ロット番号", cat: "generic" },
   // --- 先発・その他 ---
   { name: "塩野義製薬", kana: "しおのぎ シオノギ shionogi", url: "https://expiration-search.shionogi.co.jp/", note: "ロット番号＋製品名", cat: "brand" },
   { name: "MSD", kana: "えむえすでぃー msd", url: "https://www.msdconnect.jp/product-product-lotnum/", note: "MSD Connect内", cat: "brand" },
@@ -839,10 +842,15 @@ const COMPANIES = [
   { name: "大正製薬", kana: "たいしょう taisho", url: "https://medical.taisho.co.jp/medical/di/lotsearch/", note: "", cat: "brand" },
   { name: "三和化学研究所", kana: "さんわ skk", url: "https://med.skk-net.com/supplies/expirations/index.html", note: "", cat: "brand" },
   { name: "トーアエイヨー", kana: "とーあえいよー toaeiyo", url: "https://cardio-1.toaeiyo.co.jp/ExpirationDate/", note: "", cat: "brand" },
+  { name: "ノバルティスファーマ", kana: "のばるてぃす novartis", url: "https://lotsearch.novartis.co.jp/", note: "使用期限検索専用サイト", cat: "brand" },
+  { name: "サノフィ", kana: "さのふぃ sanofi", url: "https://www.e-mr.sanofi.co.jp/product_list/lotsearch", note: "e-MR内", cat: "brand" },
   // --- 専用検索ページなし（問い合わせ・チャット対応） ---
   { name: "武田薬品工業", kana: "たけだ takeda", url: "https://www.takedamed.com/contact", note: "チャットボット「DI-bot」の「使用有効期限を調べる」で確認できる", cat: "contact" },
   { name: "ファイザー", kana: "ふぁいざー pfizer", url: "https://www.pfizermedicalinformation.jp/", note: "ログイン不要。右下のチャットボット「マイボ」→「使用期限検索」でロット番号を入力", cat: "contact" },
   { name: "大塚製薬", kana: "おおつか otsuka", url: "https://www.otsuka.co.jp/contacts/", note: "チャットボットなし。医薬情報センターへ電話で問い合わせ", cat: "contact" },
+  { name: "あすか製薬", kana: "あすか aska", url: "https://www.aska-pharma.co.jp/iryouiyaku/", note: "チャットボットで「使用期限検索」に対応", cat: "contact" },
+  { name: "ヴィアトリス製薬", kana: "びあとりす viatris", url: "https://www.viatris-e-channel.com/", note: "チャットボットで使用期限検索。要会員登録（医療系国家資格保有者限定）", cat: "contact" },
+  { name: "ツムラ", kana: "つむら tsumura", url: "https://medical.tsumura.co.jp/products/information/expiration_date", note: "要ログイン（医療関係者向け会員登録）", cat: "contact" },
 ];
 
 // 厚労省・薬価基準収載品目リストの「メーカー名」表記 → 上記COMPANIESのnameへの対応表
@@ -884,6 +892,15 @@ const MAKER_MAP = {
   "シオノギファーマ": "塩野義製薬",
   "全星薬品工業": "全星薬品工業",
   "ＭＳＤ": "MSD",
+  "高田製薬": "高田製薬",
+  "辰巳化学": "辰巳化学",
+  "扶桑薬品工業": "扶桑薬品工業",
+  "ノバルティス　ファーマ": "ノバルティスファーマ",
+  "サノフィ": "サノフィ",
+  "あすか製薬": "あすか製薬",
+  "ヴィアトリス製薬": "ヴィアトリス製薬",
+  "ヴィアトリス・ヘルスケア": "ヴィアトリス製薬",
+  "ツムラ": "ツムラ",
 };
 
 let drugsData = null;
