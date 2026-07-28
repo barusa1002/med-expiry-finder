@@ -226,6 +226,35 @@
   .memo-row button:hover { background: var(--blue-dark); }
   .memo-hint { font-size: .82rem; color: var(--sub); margin-top: 10px; }
 
+  .maker-result-list { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; }
+  .maker-result {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    width: 100%;
+  }
+  .maker-result:hover { border-color: var(--blue); }
+  .maker-result .mr-info { flex: 1; min-width: 0; }
+  .maker-result .mr-name { font-weight: 700; font-size: .95rem; }
+  .maker-result .mr-maker { font-size: .8rem; color: var(--sub); }
+  .maker-result .mr-go {
+    flex-shrink: 0;
+    font-size: .78rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .maker-result.matched .mr-go { background: var(--blue-pale); color: var(--blue); }
+  .maker-result.unmatched .mr-go { background: var(--orange-pale); color: var(--orange); }
+
   .action-btn {
     display: block;
     width: 100%;
@@ -473,6 +502,15 @@
       <div class="num">3</div>
       <div><div class="t">貼り付けて検索</div><div class="d">開いたページに貼り付ければ使用期限がわかる</div></div>
     </div>
+  </div>
+
+  <div class="memo-box">
+    <h2>🔍 メーカーがわからないとき（医薬品名から調べる）</h2>
+    <div class="memo-row">
+      <input id="makerLookup" type="text" placeholder="例: ロキソニン、アムロジピン" autocomplete="off">
+    </div>
+    <p class="memo-hint" id="makerLookupHint">※ 厚生労働省の薬価基準収載品目リスト（約1万品目）から検索します。PTPシートに製薬会社名が書かれていない・読み取れないときにお使いください。</p>
+    <div id="makerLookupResults"></div>
   </div>
 
   <div class="memo-box">
@@ -807,6 +845,61 @@ const COMPANIES = [
   { name: "大塚製薬", kana: "おおつか otsuka", url: "https://www.otsuka.co.jp/contacts/", note: "チャットボットなし。医薬情報センターへ電話で問い合わせ", cat: "contact" },
 ];
 
+// 厚労省・薬価基準収載品目リストの「メーカー名」表記 → 上記COMPANIESのnameへの対応表
+// （表記ゆれ・グループ会社・旧社名などを吸収するためのマッピング。全メーカーを網羅はしていません）
+const MAKER_MAP = {
+  "東和薬品": "東和薬品",
+  "沢井製薬": "沢井製薬",
+  "ニプロ": "ニプロ",
+  "ニプロ　エス．エス製薬": "ニプロ",
+  "日医工": "日医工",
+  "日医工岐阜工場": "日医工",
+  "ファイザー": "ファイザー",
+  "共和薬品工業": "共和薬品工業",
+  "Ｍｅｉｊｉ　Ｓｅｉｋａ　ファルマ": "Meiji Seika ファルマ",
+  "日本ジェネリック": "日本ジェネリック",
+  "田辺ファーマ": "田辺三菱製薬",
+  "田辺三菱製薬": "田辺三菱製薬",
+  "第一三共エスファ": "第一三共エスファ",
+  "住友ファーマ": "住友ファーマ",
+  "武田薬品工業": "武田薬品工業",
+  "エーザイ": "エーザイ",
+  "キョーリンリメディオ": "キョーリンリメディオ",
+  "サンド": "サンド",
+  "サンドファーマ": "サンド",
+  "協和キリン": "協和キリン",
+  "大塚製薬": "大塚製薬",
+  "日本イーライリリー": "日本イーライリリー",
+  "大正製薬": "大正製薬",
+  "三和化学研究所": "三和化学研究所",
+  "トーアエイヨー": "トーアエイヨー",
+  "鳥居薬品": "鳥居薬品",
+  "旭化成ファーマ": "旭化成ファーマ",
+  "旭化成セラピューティクス": "旭化成ファーマ",
+  "日本新薬": "日本新薬",
+  "興和": "興和",
+  "興和ＡＧファーマ": "興和",
+  "アステラス製薬": "アステラス製薬",
+  "塩野義製薬": "塩野義製薬",
+  "シオノギファーマ": "塩野義製薬",
+  "全星薬品工業": "全星薬品工業",
+  "ＭＳＤ": "MSD",
+};
+
+let drugsData = null;
+let drugsLoadPromise = null;
+function loadDrugsData() {
+  if (drugsLoadPromise) return drugsLoadPromise;
+  drugsLoadPromise = fetch("drugs.json")
+    .then((r) => r.json())
+    .then((data) => { drugsData = data; return data; })
+    .catch(() => {
+      document.getElementById("makerLookupHint").textContent = "※ データの読み込みに失敗しました。通信環境を確認し、再読み込みしてください。";
+      return [];
+    });
+  return drugsLoadPromise;
+}
+
 const favKey = "kigen-portal-favs";
 let favs = new Set(JSON.parse(localStorage.getItem(favKey) || "[]"));
 
@@ -866,6 +959,87 @@ function render() {
 }
 
 filterInput.addEventListener("input", render);
+
+// ---------- 医薬品名からメーカーを調べる ----------
+const makerLookupInput = document.getElementById("makerLookup");
+const makerLookupResults = document.getElementById("makerLookupResults");
+const makerLookupHint = document.getElementById("makerLookupHint");
+let makerLookupTimer = null;
+
+function findCompanyByName(name) {
+  return COMPANIES.find((c) => c.name === name);
+}
+
+function renderMakerResults(query) {
+  if (!drugsData) {
+    makerLookupResults.innerHTML = "";
+    return;
+  }
+  const q = query.trim();
+  if (q.length < 2) {
+    makerLookupResults.innerHTML = "";
+    return;
+  }
+  const qLower = q.toLowerCase();
+  const matches = [];
+  for (let i = 0; i < drugsData.length; i++) {
+    const [dName, dMaker] = drugsData[i];
+    if (dName.toLowerCase().includes(qLower)) {
+      matches.push([dName, dMaker]);
+      if (matches.length >= 30) break;
+    }
+  }
+
+  if (matches.length === 0) {
+    makerLookupResults.innerHTML = '<p class="empty">一致する医薬品が見つかりませんでした（表記のゆれや、リスト未収載の製品の可能性があります）</p>';
+    return;
+  }
+
+  const list = document.createElement("div");
+  list.className = "maker-result-list";
+  matches.forEach(([dName, dMaker]) => {
+    const companyName = MAKER_MAP[dMaker];
+    const company = companyName ? findCompanyByName(companyName) : null;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "maker-result " + (company ? "matched" : "unmatched");
+    btn.innerHTML = `
+      <div class="mr-info">
+        <div class="mr-name">${escapeHtml(dName)}</div>
+        <div class="mr-maker">製造販売元: ${escapeHtml(dMaker)}</div>
+      </div>
+      <div class="mr-go">${company ? "検索ページへ ▶" : "未登録"}</div>`;
+    btn.addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(dName); } catch {}
+      document.getElementById("drug").value = dName;
+      if (company) {
+        toast.textContent = `「${dName}」をコピーしました。開いた${company.name}のページに貼り付けてください`;
+        window.open(company.url, "_blank", "noopener");
+      } else {
+        toast.textContent = `「${dName}」（製造販売元: ${dMaker}）をコピーしました。このメーカーの検索ページは未登録です`;
+      }
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3200);
+    });
+    list.appendChild(btn);
+  });
+  makerLookupResults.innerHTML = "";
+  makerLookupResults.appendChild(list);
+}
+
+makerLookupInput.addEventListener("focus", () => {
+  if (!drugsData) {
+    makerLookupHint.textContent = "※ データを読み込み中です…（初回のみ数秒かかります）";
+    loadDrugsData().then(() => {
+      makerLookupHint.textContent = "※ 厚生労働省の薬価基準収載品目リスト（約1万品目）から検索します。PTPシートに製薬会社名が書かれていない・読み取れないときにお使いください。";
+      renderMakerResults(makerLookupInput.value);
+    });
+  }
+});
+makerLookupInput.addEventListener("input", () => {
+  clearTimeout(makerLookupTimer);
+  makerLookupTimer = setTimeout(() => renderMakerResults(makerLookupInput.value), 150);
+});
 
 // ---------- タブ切り替え ----------
 const tabPanels = {
