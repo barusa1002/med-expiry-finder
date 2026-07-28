@@ -1055,14 +1055,14 @@ function renderMakerResults(query) {
       </div>
       <div class="mr-go">${company ? "検索ページへ ▶" : "未登録"}</div>`;
     btn.addEventListener("click", () => {
+      navigator.clipboard.writeText(dName).catch(() => {});
+      document.getElementById("drug").value = dName;
       if (company) {
         window.open(company.url, "_blank", "noopener");
         toast.textContent = `「${dName}」をコピーしました。開いた${company.name}のページに貼り付けてください`;
       } else {
         toast.textContent = `「${dName}」（製造販売元: ${dMaker}）をコピーしました。このメーカーの検索ページは未登録です`;
       }
-      document.getElementById("drug").value = dName;
-      navigator.clipboard.writeText(dName).catch(() => {});
       toast.classList.add("show");
       setTimeout(() => toast.classList.remove("show"), 3200);
     });
