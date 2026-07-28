@@ -505,7 +505,7 @@
   </div>
 
   <div class="memo-box">
-    <h2>📋 コピー用メモ</h2>
+    <h2>📋 製品名から検索する</h2>
     <div class="memo-grid">
       <div class="memo-field">
         <label for="drug">製品名</label>
@@ -530,6 +530,8 @@
     <p class="memo-hint" id="makerLookupHint">※ 製品名を2文字以上入力すると、厚生労働省の薬価基準収載品目リスト（約1万品目）からメーカー候補が表示されます。多くのメーカーは「製品名＋ロット番号」のセット入力が必要です。先にコピーしておくと、開いた先で貼り付けるだけで検索できます。</p>
     <button id="toReportBtn" class="action-btn green">📝 この製品を報告書に追加</button>
   </div>
+
+  <h2 style="margin-bottom:12px;">🏢 製薬会社から検索する</h2>
 
   <div class="filter-box">
     <span class="icon">🔍</span>
@@ -712,10 +714,6 @@
         <label for="repExpiry">確認した使用期限</label>
         <div class="memo-row"><input id="repExpiry" type="text" placeholder="例: 2027-03" autocomplete="off"></div>
       </div>
-      <div class="memo-field">
-        <label for="repMaker">メーカー（任意）</label>
-        <div class="memo-row"><input id="repMaker" type="text" placeholder="例: 沢井製薬" autocomplete="off"></div>
-      </div>
     </div>
     <div class="memo-field" style="margin-top:14px;">
       <label for="repMemo">メモ（任意）</label>
@@ -730,7 +728,7 @@
     <div style="overflow-x:auto;">
       <table class="report-table">
         <thead>
-          <tr><th>種別</th><th>製品名／薬品名</th><th>ロット番号／識別コード</th><th>確認結果</th><th>メーカー</th><th>メモ</th><th class="noprint"></th></tr>
+          <tr><th>種別</th><th>製品名／薬品名</th><th>ロット番号／識別コード</th><th>確認結果</th><th>メモ</th><th class="noprint"></th></tr>
         </thead>
         <tbody id="reportBody"></tbody>
       </table>
@@ -1208,7 +1206,6 @@ function reportRender() {
       <td>${escapeHtml(e.product) || "-"}</td>
       <td>${escapeHtml(e.lot) || "-"}</td>
       <td>${escapeHtml(e.expiry) || "-"}</td>
-      <td>${escapeHtml(e.maker) || "-"}</td>
       <td class="memo-cell">${escapeHtml(e.memo) || ""}</td>
       <td class="noprint"><button class="row-del" data-id="${e.id}">削除</button></td>`;
     reportBody.appendChild(tr);
@@ -1224,14 +1221,13 @@ function reportRender() {
   });
 }
 
-function addReportEntry(kind, product, lot, expiry, maker, memo) {
+function addReportEntry(kind, product, lot, expiry, memo) {
   reportEntries.push({
     id: Date.now() + Math.random(),
     kind: kind || "expiry",
     product: product || "",
     lot: lot || "",
     expiry: expiry || "",
-    maker: maker || "",
     memo: memo || "",
   });
   saveReport();
@@ -1250,10 +1246,9 @@ document.getElementById("addReportBtn").addEventListener("click", () => {
     product,
     lot,
     document.getElementById("repExpiry").value.trim(),
-    document.getElementById("repMaker").value.trim(),
     document.getElementById("repMemo").value.trim()
   );
-  ["repProduct", "repLot", "repExpiry", "repMaker", "repMemo"].forEach((id) => { document.getElementById(id).value = ""; });
+  ["repProduct", "repLot", "repExpiry", "repMemo"].forEach((id) => { document.getElementById(id).value = ""; });
   document.getElementById("repProduct").focus();
 });
 
@@ -1273,7 +1268,7 @@ document.getElementById("toReportBtn").addEventListener("click", () => {
     document.getElementById("drug").focus();
     return;
   }
-  addReportEntry("expiry", product, lot, expiry, "", "");
+  addReportEntry("expiry", product, lot, expiry, "");
   toast.textContent = expiry ? "報告書に追加しました" : "報告書に追加しました（使用期限はあとで報告書タブから入力してください）";
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 2600);
@@ -1287,7 +1282,7 @@ document.getElementById("toReportBtnIdentify").addEventListener("click", () => {
     document.getElementById("code").focus();
     return;
   }
-  addReportEntry("identify", name, code, "", "", "");
+  addReportEntry("identify", name, code, "", "");
   toast.textContent = "報告書に追加しました（鑑別結果はあとで報告書タブから入力してください）";
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 2600);
@@ -1309,7 +1304,6 @@ document.getElementById("printReportBtn").addEventListener("click", () => {
       <td>${escapeHtml(e.product) || "-"}</td>
       <td>${escapeHtml(e.lot) || "-"}</td>
       <td>${escapeHtml(e.expiry) || "-"}</td>
-      <td>${escapeHtml(e.maker) || "-"}</td>
       <td>${escapeHtml(e.memo) || ""}</td>
     </tr>`;
   }).join("");
@@ -1331,7 +1325,7 @@ document.getElementById("printReportBtn").addEventListener("click", () => {
   <h1>医薬品 使用期限確認・錠剤鑑別 報告書</h1>
   <div class="meta"><span>確認日: ${dateStr}</span><span>件数: ${reportEntries.length}件</span></div>
   <table>
-    <thead><tr><th>No.</th><th>種別</th><th>製品名／薬品名</th><th>ロット番号／識別コード</th><th>確認結果</th><th>メーカー</th><th>メモ</th></tr></thead>
+    <thead><tr><th>No.</th><th>種別</th><th>製品名／薬品名</th><th>ロット番号／識別コード</th><th>確認結果</th><th>メモ</th></tr></thead>
     <tbody>${rows}</tbody>
   </table>
   <div class="sign">確認者：<span class="line"></span></div>
