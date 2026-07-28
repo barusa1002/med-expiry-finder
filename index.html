@@ -581,7 +581,7 @@
         <label for="kanaName">薬の名前（全角カタカナ・漢字で3文字以上）</label>
         <div class="memo-row">
           <input id="kanaName" type="text" placeholder="例: ロキソニン" autocomplete="off">
-          <button id="kanaBtn" style="min-width:80px; text-align:center;">検索</button>
+          <button id="kanaBtn">検索</button>
         </div>
       </div>
     </div>
@@ -1134,6 +1134,17 @@ document.getElementById("printReportBtn").addEventListener("click", () => {
 reportRender();
 
 render();
+
+// ---------- 検索ボタンの幅をコピーボタンに合わせる ----------
+function matchKanaBtnWidth() {
+  const kanaBtn = document.getElementById("kanaBtn");
+  kanaBtn.style.minWidth = "0px";
+  let maxW = 0;
+  document.querySelectorAll("[data-copy]").forEach((b) => { maxW = Math.max(maxW, b.offsetWidth); });
+  if (maxW > 0) kanaBtn.style.minWidth = maxW + "px";
+}
+window.addEventListener("load", matchKanaBtnWidth);
+window.addEventListener("resize", matchKanaBtnWidth);
 </script>
 
 <!-- Cloudflare Web Analytics -->
