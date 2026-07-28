@@ -505,29 +505,6 @@
   </div>
 
   <div class="memo-box">
-    <h2>🔍 メーカーがわからないとき（医薬品名から調べる）</h2>
-    <div class="memo-row">
-      <input id="makerLookup" type="text" placeholder="例: ロキソニン、アムロジピン" autocomplete="off">
-    </div>
-    <p class="memo-hint" id="makerLookupHint">※ 厚生労働省の薬価基準収載品目リスト（約1万品目）から検索します。PTPシートに製薬会社名が書かれていない・読み取れないときにお使いください。</p>
-    <div id="makerLookupResults"></div>
-    <div id="makerLookupRecord" hidden>
-      <p class="memo-hint" id="makerLookupSelected" style="margin-top:16px; font-weight:700; color:var(--text);"></p>
-      <div class="memo-grid">
-        <div class="memo-field">
-          <label for="makerLookupLot">ロット番号（製造番号）</label>
-          <div class="memo-row"><input id="makerLookupLot" type="text" placeholder="例: A123B" autocomplete="off"></div>
-        </div>
-        <div class="memo-field">
-          <label for="makerLookupExpiry">確認した使用期限</label>
-          <div class="memo-row"><input id="makerLookupExpiry" type="text" placeholder="例: 2027-03" autocomplete="off"></div>
-        </div>
-      </div>
-      <button id="makerLookupAddReportBtn" class="action-btn green">📝 報告書に追加</button>
-    </div>
-  </div>
-
-  <div class="memo-box">
     <h2>📋 コピー用メモ</h2>
     <div class="memo-grid">
       <div class="memo-field">
@@ -536,6 +513,7 @@
           <input id="drug" type="text" placeholder="例: アムロジピン錠5mg" autocomplete="off">
           <button data-copy="drug">コピー</button>
         </div>
+        <div id="makerLookupResults"></div>
       </div>
       <div class="memo-field">
         <label for="lot">ロット番号（製造番号）</label>
@@ -545,8 +523,12 @@
         </div>
       </div>
     </div>
-    <p class="memo-hint">※ 多くのメーカーは「製品名＋ロット番号」のセット入力が必要です。先にコピーしておくと、開いた先で貼り付けるだけで検索できます。</p>
-    <button id="toReportBtn" class="action-btn green">📝 この製品を報告書に追加（使用期限は確認後に入力）</button>
+    <div class="memo-field" style="margin-top:14px;">
+      <label for="drugExpiry">確認した使用期限（任意）</label>
+      <div class="memo-row"><input id="drugExpiry" type="text" placeholder="例: 2027-03" autocomplete="off"></div>
+    </div>
+    <p class="memo-hint" id="makerLookupHint">※ 製品名を2文字以上入力すると、厚生労働省の薬価基準収載品目リスト（約1万品目）からメーカー候補が表示されます。多くのメーカーは「製品名＋ロット番号」のセット入力が必要です。先にコピーしておくと、開いた先で貼り付けるだけで検索できます。</p>
+    <button id="toReportBtn" class="action-btn green">📝 この製品を報告書に追加</button>
   </div>
 
   <div class="filter-box">
@@ -1020,7 +1002,7 @@ function render() {
 filterInput.addEventListener("input", render);
 
 // ---------- 医薬品名からメーカーを調べる ----------
-const makerLookupInput = document.getElementById("makerLookup");
+const makerLookupInput = document.getElementById("drug");
 const makerLookupResults = document.getElementById("makerLookupResults");
 const makerLookupHint = document.getElementById("makerLookupHint");
 let makerLookupTimer = null;
@@ -1071,6 +1053,7 @@ function renderMakerResults(query) {
     btn.addEventListener("click", () => {
       navigator.clipboard.writeText(dName).catch(() => {});
       document.getElementById("drug").value = dName;
+      makerLookupResults.innerHTML = "";
       if (company) {
         window.open(company.url, "_blank", "noopener");
         toast.textContent = `「${dName}」をコピーしました。開いた${company.name}のページに貼り付けてください`;
@@ -1079,11 +1062,6 @@ function renderMakerResults(query) {
       }
       toast.classList.add("show");
       setTimeout(() => toast.classList.remove("show"), 3200);
-
-      selectedDrugName = dName;
-      selectedDrugMaker = company ? company.name : dMaker;
-      document.getElementById("makerLookupSelected").textContent = `選択中: ${dName}（${dMaker}）`;
-      document.getElementById("makerLookupRecord").hidden = false;
     });
     list.appendChild(btn);
   });
@@ -1091,27 +1069,9 @@ function renderMakerResults(query) {
   makerLookupResults.appendChild(list);
 }
 
-let selectedDrugName = "";
-let selectedDrugMaker = "";
-document.getElementById("makerLookupAddReportBtn").addEventListener("click", () => {
-  if (!selectedDrugName) return;
-  const lot = document.getElementById("makerLookupLot").value.trim();
-  const expiry = document.getElementById("makerLookupExpiry").value.trim();
-  addReportEntry("expiry", selectedDrugName, lot, expiry, selectedDrugMaker, "");
-  toast.textContent = "報告書に追加しました";
-  toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 2000);
-  document.getElementById("makerLookupLot").value = "";
-  document.getElementById("makerLookupExpiry").value = "";
-});
-
 makerLookupInput.addEventListener("focus", () => {
   if (!drugsData) {
-    makerLookupHint.textContent = "※ データを読み込み中です…（初回のみ数秒かかります）";
-    loadDrugsData().then(() => {
-      makerLookupHint.textContent = "※ 厚生労働省の薬価基準収載品目リスト（約1万品目）から検索します。PTPシートに製薬会社名が書かれていない・読み取れないときにお使いください。";
-      renderMakerResults(makerLookupInput.value);
-    });
+    loadDrugsData().then(() => renderMakerResults(makerLookupInput.value));
   }
 });
 makerLookupInput.addEventListener("input", () => {
@@ -1308,14 +1268,16 @@ document.getElementById("clearReportBtn").addEventListener("click", () => {
 document.getElementById("toReportBtn").addEventListener("click", () => {
   const product = document.getElementById("drug").value.trim();
   const lot = document.getElementById("lot").value.trim();
+  const expiry = document.getElementById("drugExpiry").value.trim();
   if (!product && !lot) {
     document.getElementById("drug").focus();
     return;
   }
-  addReportEntry("expiry", product, lot, "", "", "");
-  toast.textContent = "報告書に追加しました（使用期限はあとで報告書タブから入力してください）";
+  addReportEntry("expiry", product, lot, expiry, "", "");
+  toast.textContent = expiry ? "報告書に追加しました" : "報告書に追加しました（使用期限はあとで報告書タブから入力してください）";
   toast.classList.add("show");
   setTimeout(() => toast.classList.remove("show"), 2600);
+  document.getElementById("drugExpiry").value = "";
 });
 
 document.getElementById("toReportBtnIdentify").addEventListener("click", () => {
