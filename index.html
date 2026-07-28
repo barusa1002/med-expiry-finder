@@ -1053,7 +1053,7 @@ function renderMakerResults(query) {
         <div class="mr-name">${escapeHtml(dName)}</div>
         <div class="mr-maker">製造販売元: ${escapeHtml(dMaker)}</div>
       </div>
-      <div class="mr-go">${company ? "検索ページへ ▶" : "未登録"}</div>`;
+      <div class="mr-go">${company ? "コピー＆検索ページへ ▶" : "未登録"}</div>`;
     btn.addEventListener("click", () => {
       navigator.clipboard.writeText(dName).catch(() => {});
       document.getElementById("drug").value = dName;
