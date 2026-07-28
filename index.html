@@ -826,6 +826,8 @@ const COMPANIES = [
   { name: "辰巳化学", kana: "たつみ tatsumi", url: "https://www.tatsumi-kagaku.com/public/info_medical/list.php?submit_expiration_list=1", note: "", cat: "generic" },
   { name: "扶桑薬品工業", kana: "ふそう fuso", url: "https://www.fuso-pharm.co.jp/med/ph/expiration/", note: "製品名＋ロット番号（ダイト製品もこちらで検索可）", cat: "generic" },
   { name: "丸石製薬", kana: "まるいし maruishi", url: "https://www.maruishi-pharm.co.jp/medical/expiration/", note: "製品名＋ロット番号（完全一致）。要medパスアカウント", cat: "generic" },
+  { name: "わかもと製薬", kana: "わかもと wakamoto", url: "https://www.wakamoto-pharm.co.jp/medical/lot-search/", note: "製品名＋ロット番号", cat: "generic" },
+  { name: "太陽ファルマ", kana: "たいよう taiyo", url: "https://www.taiyo-pharma.co.jp/ja/med_home/lotsearch.html", note: "", cat: "generic" },
   // --- 先発・その他 ---
   { name: "塩野義製薬", kana: "しおのぎ シオノギ shionogi", url: "https://expiration-search.shionogi.co.jp/", note: "ロット番号＋製品名", cat: "brand" },
   { name: "MSD", kana: "えむえすでぃー msd", url: "https://www.msdconnect.jp/product-product-lotnum/", note: "MSD Connect内", cat: "brand" },
@@ -849,6 +851,10 @@ const COMPANIES = [
   { name: "帝國製薬", kana: "ていこく teikoku", url: "https://www.teikoku.co.jp/med_database/limit", note: "", cat: "brand" },
   { name: "持田製薬", kana: "もちだ mochida", url: "https://med.mochida.co.jp/lotsearch/", note: "", cat: "brand" },
   { name: "Ｔ's製薬", kana: "てぃーず tspharma", url: "https://www.med.ts-pharma.com/di-net/product/zaikolot.html", note: "DI-Net内", cat: "brand" },
+  { name: "小野薬品工業", kana: "おの ono", url: "https://www.ononavi1717.jp/medical-support/lotsearch", note: "ONO MEDICAL NAVI内", cat: "brand" },
+  { name: "キッセイ薬品工業", kana: "きっせい kissei", url: "https://med.kissei.co.jp/lot/index.html", note: "KISSEI Medical Navi内", cat: "brand" },
+  { name: "マルホ", kana: "まるほ maruho", url: "https://www.maruho.co.jp/medical/lotno/index.php?action_Medical_Lotno_Searchexpiration=true", note: "要ログイン（会員登録）", cat: "brand" },
+  { name: "大鵬薬品工業", kana: "たいほう taiho", url: "https://www.taiho.co.jp/medical/product/limit/", note: "", cat: "brand" },
   // --- 専用検索ページなし（問い合わせ・チャット対応） ---
   { name: "武田薬品工業", kana: "たけだ takeda", url: "https://www.takedamed.com/contact", note: "チャットボット「DI-bot」の「使用有効期限を調べる」で確認できる", cat: "contact" },
   { name: "ファイザー", kana: "ふぁいざー pfizer", url: "https://www.pfizermedicalinformation.jp/", note: "ログイン不要。右下のチャットボット「マイボ」→「使用期限検索」でロット番号を入力", cat: "contact" },
@@ -856,6 +862,7 @@ const COMPANIES = [
   { name: "あすか製薬", kana: "あすか aska", url: "https://www.aska-pharma.co.jp/iryouiyaku/", note: "チャットボットで「使用期限検索」に対応", cat: "contact" },
   { name: "ヴィアトリス製薬", kana: "びあとりす viatris", url: "https://www.viatris-e-channel.com/", note: "チャットボットで使用期限検索。要会員登録（医療系国家資格保有者限定）", cat: "contact" },
   { name: "ツムラ", kana: "つむら tsumura", url: "https://medical.tsumura.co.jp/products/information/expiration_date", note: "要ログイン（医療関係者向け会員登録）", cat: "contact" },
+  { name: "アストラゼネカ", kana: "あすとらぜねか astrazeneca", url: "https://med.astrazeneca.co.jp/product/aztreat.html", note: "AIチャットボット「アズトリート」でロット番号から使用期限確認", cat: "contact" },
 ];
 
 // 厚労省・薬価基準収載品目リストの「メーカー名」表記 → 上記COMPANIESのnameへの対応表
@@ -914,6 +921,14 @@ const MAKER_MAP = {
   "持田製薬販売": "持田製薬",
   "Ｔ’ｓ製薬": "Ｔ's製薬",
   "Ｔ’ｓファーマ": "Ｔ's製薬",
+  "わかもと製薬": "わかもと製薬",
+  "太陽ファルマ": "太陽ファルマ",
+  "小野薬品工業": "小野薬品工業",
+  "キッセイ薬品工業": "キッセイ薬品工業",
+  "マルホ": "マルホ",
+  "大鵬薬品工業": "大鵬薬品工業",
+  "岡山大鵬薬品": "大鵬薬品工業",
+  "アストラゼネカ": "アストラゼネカ",
 };
 
 let drugsData = null;
