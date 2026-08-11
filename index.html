@@ -842,7 +842,7 @@ const COMPANIES = [
   { name: "旭化成ファーマ", kana: "あさひかせい asahi", url: "https://akp-pharma-digital.com/products/shiyokigen", note: "Pharma DIGITAL内", cat: "brand" },
   // PENDING_APPROVAL: { name: "日本イーライリリー", kana: "いーらいりりー lilly", url: "https://medical.lilly.com/jp/home/lot_info", note: "ロット番号別", cat: "brand" },
   // PENDING_APPROVAL: { name: "大正製薬", kana: "たいしょう taisho", url: "https://medical.taisho.co.jp/medical/di/lotsearch/", note: "", cat: "brand" },
-  // PENDING_APPROVAL: { name: "三和化学研究所", kana: "さんわ skk", url: "https://med.skk-net.com/supplies/expirations/index.html", note: "", cat: "brand" },
+  { name: "三和化学研究所", kana: "さんわ skk", mode: "google", note: "直接リンク不可のためGoogle検索結果へ遷移します", cat: "brand" },
   { name: "トーアエイヨー", kana: "とーあえいよー toaeiyo", url: "https://cardio-1.toaeiyo.co.jp/ExpirationDate/", note: "", cat: "brand" },
   // PENDING_APPROVAL: { name: "ノバルティスファーマ", kana: "のばるてぃす novartis", url: "https://lotsearch.novartis.co.jp/", note: "使用期限検索専用サイト", cat: "brand" },
   { name: "サノフィ", kana: "さのふぃ sanofi", url: "https://pro.campus.sanofi/jp/products/product-list", note: "Campus内。要ログイン（医療従事者限定）", cat: "brand" },
@@ -954,14 +954,22 @@ const brandGrid = document.getElementById("brandGrid");
 const contactGrid = document.getElementById("contactGrid");
 const filterInput = document.getElementById("filter");
 
+function companyUrl(c) {
+  if (c.mode === "google") {
+    const q = encodeURIComponent(c.query || `${c.name} 使用期限検索`);
+    return `https://www.google.com/search?q=${q}`;
+  }
+  return c.url;
+}
+
 function card(c) {
   const a = document.createElement("a");
   a.className = "company " + c.cat;
-  a.href = c.url;
+  a.href = companyUrl(c);
   a.target = "_blank";
   a.rel = "noopener";
   const isFav = favs.has(c.name);
-  const openLabel = c.cat === "contact" ? "問い合わせへ" : "検索ページへ";
+  const openLabel = c.mode === "google" ? "Googleで検索" : (c.cat === "contact" ? "問い合わせへ" : "検索ページへ");
   a.innerHTML = `
     <button class="star-btn ${isFav ? "on" : ""}" aria-label="お気に入り" title="お気に入りに登録">★</button>
     <div class="info">
@@ -1058,7 +1066,7 @@ function renderMakerResults(query) {
       document.getElementById("drug").value = dName;
       makerLookupResults.innerHTML = "";
       if (company) {
-        window.open(company.url, "_blank", "noopener");
+        window.open(companyUrl(company), "_blank", "noopener");
         toast.textContent = `「${dName}」をコピーしました。開いた${company.name}のページに貼り付けてください`;
       } else {
         toast.textContent = `「${dName}」（製造販売元: ${dMaker}）をコピーしました。このメーカーの検索ページは未登録です`;
