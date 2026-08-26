@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0b6bcb">
+<meta name="theme-color" content="#0d6e63">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>持参薬チェック｜医薬品使用期限検索・錠剤鑑別ツール【薬剤師向け無料】</title>
@@ -84,19 +84,19 @@
 </script>
 <style>
   :root {
-    --bg: #eef2f6;
+    --bg: #eef1ef;
     --card: #ffffff;
-    --text: #1f2733;
-    --sub: #5a6675;
-    --blue: #0b6bcb;
-    --blue-dark: #095caf;
-    --blue-pale: #e8f1fb;
-    --green: #1a8a4e;
-    --green-pale: #e6f5ec;
-    --orange: #c05f00;
-    --orange-pale: #fdf1e2;
-    --border: #d7dee7;
-    --star: #f0a500;
+    --text: #1c2624;
+    --sub: #56645f;
+    --blue: #0d6e63;
+    --blue-dark: #0a544c;
+    --blue-pale: #e2f0ed;
+    --green: #5b7f3a;
+    --green-pale: #edf2e3;
+    --orange: #a85d0f;
+    --orange-pale: #f9f0df;
+    --border: #d7dcd7;
+    --star: #c98a12;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { font-size: 16px; }
@@ -115,8 +115,9 @@
     padding: calc(22px + env(safe-area-inset-top)) 16px 20px;
   }
   .site-header .inner { max-width: 968px; margin: 0 auto; }
-  h1 { font-size: 1.5rem; line-height: 1.4; }
-  .site-header p { font-size: .95rem; opacity: .92; margin-top: 4px; }
+  h1 { font-size: 1.5rem; line-height: 1.4; display: flex; align-items: center; gap: 10px; letter-spacing: .01em; }
+  h1 .mark { flex-shrink: 0; width: 30px; height: 30px; }
+  .site-header p { font-size: .95rem; opacity: .92; margin-top: 6px; }
 
   /* ---------- タブ ---------- */
   .tabs {
@@ -280,7 +281,7 @@
   .filter-box .icon {
     position: absolute; left: 14px; top: 50%;
     transform: translateY(-50%);
-    font-size: 1.1rem; color: var(--sub);
+    display: flex; color: var(--sub);
     pointer-events: none;
   }
   .filter-box input {
@@ -412,7 +413,7 @@
     font-family: inherit;
     border: none;
     border-radius: 10px;
-    background: #d7dee7;
+    background: #dde3dd;
     color: var(--sub);
     cursor: pointer;
   }
@@ -430,13 +431,15 @@
   /* ---------- 補足 ---------- */
   .gs1-note {
     background: var(--green-pale);
-    border: 1px solid #bfe3cd;
+    border: 1px solid #cddcbe;
     border-radius: 12px;
     padding: 16px 18px;
     font-size: .9rem;
     margin-top: 8px;
   }
   .gs1-note strong { display: block; margin-bottom: 4px; color: var(--green); }
+  .gs1-note.warn { background: var(--orange-pale); border-color: #e7cda3; }
+  .gs1-note.warn strong { color: var(--orange); }
   footer { margin-top: 18px; font-size: .8rem; color: var(--sub); }
 
   /* ---------- トースト ---------- */
@@ -445,7 +448,7 @@
     bottom: calc(28px + env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%);
-    background: #223047;
+    background: #1d2b28;
     color: #fff;
     padding: 12px 24px;
     border-radius: 999px;
@@ -473,15 +476,24 @@
 
 <header class="site-header">
   <div class="inner">
-    <h1>💊 持参薬チェック｜医薬品使用期限検索・錠剤鑑別ポータル</h1>
+    <h1>
+      <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#ffffff" fill-opacity=".16"/>
+        <g transform="translate(32,32) rotate(-45)">
+          <rect x="-18" y="-8" width="36" height="16" rx="8" fill="#ffffff"/>
+          <rect x="-18" y="-8" width="18" height="16" rx="8" fill="#bfe6de"/>
+        </g>
+      </svg>
+      持参薬チェック｜医薬品使用期限検索・錠剤鑑別ポータル
+    </h1>
     <p>持参薬のPTPシートから、医薬品の使用期限検索と錠剤鑑別ができる薬剤師向けの無料リンク集です。</p>
   </div>
 </header>
 
 <nav class="tabs">
-  <button class="tab-btn active" data-tab="expiry">📅 使用期限検索</button>
-  <button class="tab-btn" data-tab="identify">🔎 錠剤鑑別</button>
-  <button class="tab-btn" data-tab="report">🖨️ 報告書</button>
+  <button class="tab-btn active" data-tab="expiry">使用期限検索</button>
+  <button class="tab-btn" data-tab="identify">錠剤鑑別</button>
+  <button class="tab-btn" data-tab="report">報告書</button>
 </nav>
 
 <div class="wrap">
@@ -505,7 +517,7 @@
   </div>
 
   <div class="memo-box">
-    <h2>📋 製品名から検索する</h2>
+    <h2>製品名から検索する</h2>
     <div class="memo-grid">
       <div class="memo-field">
         <label for="drug">製品名</label>
@@ -528,13 +540,15 @@
       <div class="memo-row"><input id="drugExpiry" type="text" placeholder="例: 2027-03" autocomplete="off"></div>
     </div>
     <p class="memo-hint" id="makerLookupHint">※ 製品名を2文字以上入力すると、厚生労働省の薬価基準収載品目リスト（約1万品目）からメーカー候補が表示されます。多くのメーカーは「製品名＋ロット番号」のセット入力が必要です。先にコピーしておくと、開いた先で貼り付けるだけで検索できます。</p>
-    <button id="toReportBtn" class="action-btn green">📝 この製品を報告書に追加</button>
+    <button id="toReportBtn" class="action-btn green">この製品を報告書に追加</button>
   </div>
 
-  <h2 style="margin-bottom:12px;">🏢 製薬会社から検索する</h2>
+  <h2 style="margin-bottom:12px;">製薬会社から検索する</h2>
 
   <div class="filter-box">
-    <span class="icon">🔍</span>
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.2" y2="16.2"/></svg>
+    </span>
     <input id="filter" type="search" placeholder="会社名で絞り込み（例: さわい、トーワ、takeda）" autocomplete="off">
   </div>
 
@@ -560,7 +574,7 @@
   </section>
 
   <div class="gs1-note">
-    <strong>📷 ワンポイント</strong>
+    <strong>ワンポイント</strong>
     医薬品の箱（販売包装）の GS1 バーコードには有効期限とロット番号が入っており、読み取ればその場で期限を確認できます。ただし PTP シート（調剤包装）のバーコードは有効期限が入っていないことが多く、その場合はこのページからメーカーサイトで検索してください。
   </div>
 
@@ -591,7 +605,7 @@
   </div>
 
   <div class="memo-box">
-    <h2>🔎 識別コード（記号・番号）から調べる</h2>
+    <h2>識別コード（記号・番号）から調べる</h2>
     <div class="memo-grid">
       <div class="memo-field">
         <label for="code">識別コード（刻印・印字）</label>
@@ -603,8 +617,8 @@
       <div class="memo-field">
         <label>&nbsp;</label>
         <div class="memo-row">
-          <button id="kigoBtn" style="flex:1; min-width:0; padding:12px 8px; white-space:normal; line-height:1.3;">💊 ハイパー薬事典で検索</button>
-          <button id="googleBtn" style="flex:1; min-width:0; padding:12px 8px; white-space:normal; line-height:1.3; background:#5f6b7a;">🔍 Googleで検索</button>
+          <button id="kigoBtn" style="flex:1; min-width:0; padding:12px 8px; white-space:normal; line-height:1.3;">ハイパー薬事典で検索</button>
+          <button id="googleBtn" style="flex:1; min-width:0; padding:12px 8px; white-space:normal; line-height:1.3; background:#5f6b6a;">Googleで検索</button>
         </div>
       </div>
     </div>
@@ -613,11 +627,11 @@
       <label for="identifyConfirmedName">確認した薬品名（任意）</label>
       <div class="memo-row"><input id="identifyConfirmedName" type="text" placeholder="例: ロキソプロフェンNa錠60mg「トーワ」" autocomplete="off"></div>
     </div>
-    <button id="toReportBtnIdentify" class="action-btn green">📝 この鑑別結果を報告書に追加</button>
+    <button id="toReportBtnIdentify" class="action-btn green">この鑑別結果を報告書に追加</button>
   </div>
 
   <div class="memo-box">
-    <h2>💊 薬の名前から調べる（ハイパー薬事典）</h2>
+    <h2>薬の名前から調べる（ハイパー薬事典）</h2>
     <div class="memo-grid">
       <div class="memo-field">
         <label for="kanaName">薬の名前（全角カタカナ・漢字で3文字以上）</label>
@@ -674,8 +688,8 @@
     </div>
   </section>
 
-  <div class="gs1-note">
-    <strong>⚠️ 鑑別時の注意</strong>
+  <div class="gs1-note warn">
+    <strong>鑑別時の注意</strong>
     識別コードだけでは規格違い・剤形違いを取り違えるおそれがあります。検索結果は必ず錠剤の色・形・大きさ・割線の有無と照合し、判断に迷う場合は複数のデータベースで確認してください。<br><br>
     ※ ハイパー薬事典は古いサイト（http通信）のため、検索時にブラウザが「保護されていない通信」の確認画面を出すことがあります。送信するのは入力した記号・名前だけなので、「このまま送信」で検索できます。
   </div>
@@ -701,10 +715,10 @@
   </div>
 
   <div class="memo-box">
-    <h2>📝 確認結果を記録する</h2>
+    <h2>確認結果を記録する</h2>
     <div class="kind-toggle" style="display:flex; gap:8px; margin-bottom:16px;">
-      <button type="button" class="kind-btn active" data-kind="expiry">📅 使用期限確認</button>
-      <button type="button" class="kind-btn" data-kind="identify">🔎 錠剤鑑別</button>
+      <button type="button" class="kind-btn active" data-kind="expiry">使用期限確認</button>
+      <button type="button" class="kind-btn" data-kind="identify">錠剤鑑別</button>
     </div>
     <div class="memo-grid">
       <div class="memo-field" id="repProductField">
@@ -742,12 +756,12 @@
   </section>
 
   <div class="memo-row" style="margin-top:8px;">
-    <button id="printReportBtn" style="flex:1; min-width:0; padding:14px 8px; white-space:normal; line-height:1.3;">🖨️ 報告書を印刷 / PDF保存</button>
+    <button id="printReportBtn" style="flex:1; min-width:0; padding:14px 8px; white-space:normal; line-height:1.3;">報告書を印刷 / PDF保存</button>
     <button id="clearReportBtn" style="background:#b23b3b; padding:14px 12px; white-space:normal;">全て削除</button>
   </div>
 
   <div class="gs1-note" style="margin-top:20px;">
-    <strong>📌 このリストについて</strong>
+    <strong>このリストについて</strong>
     入力した内容はこの端末のブラウザにのみ保存されます（他の端末や他の人とは共有されません）。印刷ボタンを押すとブラウザの印刷機能が開き、そこで「PDFに保存」を選べばPDFファイルとして保存できます。
   </div>
 
@@ -1180,12 +1194,12 @@ function escapeHtml(s) {
 
 const KIND_LABELS = {
   expiry: {
-    badge: "📅 使用期限", printBadge: "使用期限確認",
+    badge: "使用期限", printBadge: "使用期限確認",
     product: "製品名", lot: "ロット番号", expiry: "確認した使用期限",
     productPh: "例: アムロジピン錠5mg「サワイ」", lotPh: "例: A123B", expiryPh: "例: 2027-03",
   },
   identify: {
-    badge: "🔎 鑑別", printBadge: "錠剤鑑別",
+    badge: "鑑別", printBadge: "錠剤鑑別",
     product: "薬品名（判明していれば）", lot: "識別コード", expiry: "鑑別結果（判明した薬品名など）",
     productPh: "例: ロキソニン錠60mg", lotPh: "例: TW483", expiryPh: "例: PMDAで確認、ロキソプロフェンNa錠60mgと判明",
   },
