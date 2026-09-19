@@ -1,0 +1,114 @@
+:root {
+  --bg: #eef2f6;
+  --card: #ffffff;
+  --text: #1f2733;
+  --sub: #5a6675;
+  --accent: #0b6bcb;
+  --accent-dark: #095caf;
+  --accent-pale: #e8f1fb;
+  --green: #1a8a4e;
+  --green-pale: #e6f5ec;
+  --orange: #c05f00;
+  --orange-pale: #fdf1e2;
+  --border: #d7dee7;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+}
+a { color: var(--accent); }
+a:focus-visible, .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.shell { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+/* ---------- ブランド ---------- */
+.brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text); }
+.brand svg { width: 36px; height: 36px; flex-shrink: 0; }
+.brand-name { font-size: 1.5rem; font-weight: 800; letter-spacing: -.01em; line-height: 1; }
+
+/* ---------- ホーム ---------- */
+.hub { display: grid; gap: 36px; padding-top: 48px; padding-bottom: 72px; }
+.hub-side .brand svg { width: 44px; height: 44px; }
+.hub-side .brand-name { font-size: 2.2rem; }
+.lede { margin-top: 22px; font-size: 1.02rem; }
+.byline { margin-top: 16px; font-size: .9rem; color: var(--sub); }
+.side-links { margin-top: 18px; display: flex; flex-direction: column; gap: 4px; font-size: .92rem; }
+
+.apps { list-style: none; background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.app { position: relative; display: grid; gap: 8px; padding: 24px 26px; border-top: 1px solid var(--border); }
+.app:first-child { border-top: 0; }
+.app:hover { background: #f7faff; }
+.app:focus-within { outline: 3px solid var(--accent); outline-offset: -3px; }
+.app h2 { font-size: 1.3rem; line-height: 1.4; }
+.app h2 a { color: var(--text); text-decoration: none; }
+.app h2 a::after { content: ""; position: absolute; inset: 0; }
+.app h2 a:focus-visible { outline: none; }
+.app p { color: var(--sub); font-size: .95rem; max-width: 38em; }
+.go { font-size: .85rem; font-weight: 700; color: var(--accent); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-size: .78rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; white-space: nowrap; background: #e3e9f0; color: var(--sub); }
+.chip.live { background: var(--green-pale); color: var(--green); }
+.chip.login { background: var(--accent-pale); color: var(--accent); }
+.chip.wip { background: var(--orange-pale); color: var(--orange); }
+
+@media (min-width: 860px) {
+  .hub { grid-template-columns: 300px 1fr; column-gap: 64px; padding-top: 80px; }
+  .hub-side { position: sticky; top: 48px; align-self: start; }
+}
+
+/* ---------- アプリ紹介ページ ---------- */
+.top { background: var(--card); border-bottom: 1px solid var(--border); }
+.top .shell { display: flex; align-items: center; gap: 20px; min-height: 56px; }
+.crumbs { font-size: .85rem; color: var(--sub); }
+.crumbs a { color: var(--sub); }
+
+.hero { padding: 52px 0 28px; }
+.hero h1 { font-size: clamp(1.75rem, 4.2vw, 2.4rem); line-height: 1.35; letter-spacing: .01em; text-wrap: balance; }
+.hero .lede { max-width: 40em; margin-top: 16px; font-size: 1.05rem; }
+.hero .chips { margin-top: 18px; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.btn { display: inline-block; padding: 13px 22px; border-radius: 10px; font-weight: 700; font-size: 1rem; text-decoration: none; line-height: 1.4; }
+.btn.primary { background: var(--accent); color: #fff; }
+.btn.primary:hover { background: var(--accent-dark); }
+.btn.ghost { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+.btn.ghost:hover { border-color: var(--accent); }
+.btn.off { background: #dde3ea; color: var(--sub); cursor: default; }
+.note { margin-top: 12px; font-size: .88rem; color: var(--sub); }
+
+.section { padding: 26px 0; }
+.section h2 { font-size: 1.25rem; line-height: 1.5; margin-bottom: 14px; }
+.prose { max-width: 44em; }
+.prose p + p { margin-top: 12px; }
+
+.panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 8px 26px; }
+.panel dl > div { padding: 16px 0; border-top: 1px solid var(--border); }
+.panel dl > div:first-child { border-top: 0; }
+.panel dt { font-weight: 700; }
+.panel dd { color: var(--sub); font-size: .95rem; margin-top: 2px; }
+
+.flow { list-style: none; counter-reset: flow; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 8px 26px; }
+.flow li { counter-increment: flow; position: relative; padding: 16px 0 16px 44px; border-top: 1px solid var(--border); }
+.flow li:first-child { border-top: 0; }
+.flow li::before {
+  content: counter(flow);
+  position: absolute; left: 0; top: 16px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--accent); color: #fff; font-weight: 700; font-size: .9rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.flow strong { display: block; }
+.flow span { color: var(--sub); font-size: .95rem; }
+
+.foot { margin-top: 28px; border-top: 1px solid var(--border); padding: 28px 0 56px; color: var(--sub); font-size: .85rem; }
+.foot .shell { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+.foot a { color: var(--sub); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .app, .btn { transition: background-color .15s, border-color .15s; }
+}
