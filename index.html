@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0b6bcb">
+<meta name="theme-color" content="#f9f9ff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>持参薬チェック｜医薬品使用期限検索・錠剤鑑別ツール【薬剤師向け無料】</title>
@@ -27,6 +27,9 @@
 
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Roboto:wght@400;500&display=swap">
 
 <script type="application/ld+json">
 {
@@ -83,393 +86,366 @@
 }
 </script>
 <style>
+  /* ==========================================================
+     Material Design 3 をベースにしたスタイル
+     配色は従来の青（#0b6bcb）をシードにしたトーナルパレット。
+     ========================================================== */
   :root {
-    --bg: #eef2f6;
-    --card: #ffffff;
-    --text: #1f2733;
-    --sub: #5a6675;
-    --blue: #0b6bcb;
-    --blue-dark: #095caf;
-    --blue-pale: #e8f1fb;
-    --green: #1a8a4e;
-    --green-pale: #e6f5ec;
-    --orange: #c05f00;
-    --orange-pale: #fdf1e2;
-    --border: #d7dee7;
-    --star: #f0a500;
+    --primary: #0b6bcb;
+    --on-primary: #ffffff;
+    --primary-container: #d6e4ff;
+    --on-primary-container: #001b3e;
+    --secondary-container: #dae2f9;
+    --on-secondary-container: #131c2b;
+    --warn-container: #ffe9c2;
+    --on-warn-container: #3b2a00;
+    --error: #ba1a1a;
+
+    --surface: #f9f9ff;
+    --surface-lowest: #ffffff;
+    --surface-low: #f3f3fa;
+    --surface-high: #e7e8ee;
+    --on-surface: #191c20;
+    --on-surface-variant: #43474e;
+    --outline: #73777f;
+    --outline-variant: #c3c6cf;
+    --inverse-surface: #2e3135;
+    --inverse-on-surface: #f0f0f7;
+
+    /* ステートレイヤー（ホバー・押下） */
+    --hover: rgba(11, 107, 203, .08);
+    --pressed: rgba(11, 107, 203, .12);
+
+    --font: "Roboto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo", sans-serif;
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { font-size: 16px; }
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; }
   body {
-    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo", sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    font-family: var(--font);
+    background: var(--surface);
+    color: var(--on-surface);
     line-height: 1.65;
+  }
+  a { color: var(--primary); }
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
   }
   .wrap { max-width: 1000px; margin: 0 auto; padding: 0 16px 56px; }
 
-  /* ---------- ヘッダー ---------- */
-  .site-header {
-    background: var(--blue);
-    color: #fff;
-    padding: calc(22px + env(safe-area-inset-top)) 16px 20px;
-  }
+  /* ---------- トップアプリバー ---------- */
+  .site-header { padding: calc(20px + env(safe-area-inset-top)) 16px 12px; }
   .site-header .inner { max-width: 968px; margin: 0 auto; }
-  h1 { font-size: 1.5rem; line-height: 1.4; display: flex; align-items: center; gap: 10px; letter-spacing: .01em; }
-  h1 .mark { flex-shrink: 0; width: 30px; height: 30px; }
-  .site-header p { font-size: .95rem; opacity: .92; margin-top: 6px; }
+  h1 {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 1.375rem; line-height: 1.4; font-weight: 500;
+  }
+  h1 .mark { flex-shrink: 0; width: 40px; height: 40px; }
+  .site-header p { margin-top: 8px; font-size: .875rem; color: var(--on-surface-variant); }
 
-  /* ---------- タブ ---------- */
+  /* ---------- プライマリタブ ---------- */
   .tabs {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 16px;
+    position: sticky; top: 0; z-index: 20;
     display: flex;
-    gap: 8px;
-    background: var(--blue);
+    padding: 0 max(16px, calc((100% - 968px) / 2));
+    background: var(--surface);
+    border-bottom: 1px solid var(--outline-variant);
   }
   .tab-btn {
-    flex: 1;
-    max-width: 260px;
-    padding: 12px 10px;
-    font-size: 1rem;
-    font-weight: 700;
-    font-family: inherit;
-    border: none;
-    border-radius: 12px 12px 0 0;
-    background: rgba(255,255,255,.18);
-    color: #fff;
-    cursor: pointer;
+    position: relative;
+    flex: 1 1 0; max-width: 200px; height: 48px;
+    font: 500 .9375rem/1 var(--font); letter-spacing: .01em;
+    color: var(--on-surface-variant);
+    background: none; border: none; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
-  .tab-btn.active {
-    background: var(--bg);
-    color: var(--blue);
+  .tab-btn:hover { background-image: linear-gradient(var(--hover), var(--hover)); }
+  .tab-btn:active { background-image: linear-gradient(var(--pressed), var(--pressed)); }
+  .tab-btn:focus-visible { outline-offset: -2px; }
+  .tab-btn.active { color: var(--primary); }
+  .tab-btn.active::after {
+    content: ""; position: absolute; left: 12px; right: 12px; bottom: 0;
+    height: 3px; background: var(--primary); border-radius: 3px 3px 0 0;
   }
 
-  /* ---------- 使い方ステップ ---------- */
+  /* ---------- 使い方 ---------- */
   .steps {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin: 20px 0 22px;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    margin: 24px 0;
+    background: var(--surface-low); border-radius: 12px;
   }
-  .step {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 16px;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
+  .step { display: flex; align-items: flex-start; gap: 12px; padding: 16px 20px; }
+  .step + .step { border-left: 1px solid var(--outline-variant); }
   .step .num {
-    background: var(--blue);
-    color: #fff;
-    font-weight: 700;
-    width: 30px; height: 30px;
-    border-radius: 50%;
+    flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    font-size: .95rem;
+    background: var(--primary-container); color: var(--on-primary-container);
+    font-size: .875rem; font-weight: 500;
   }
-  .step .t { font-weight: 700; font-size: .95rem; }
-  .step .d { font-size: .82rem; color: var(--sub); }
+  .step .t { font-size: .9375rem; font-weight: 500; }
+  .step .d { margin-top: 2px; font-size: .8125rem; line-height: 1.6; color: var(--on-surface-variant); }
 
-  /* ---------- メモ&コピー ---------- */
+  /* ---------- カード・入力欄 ---------- */
   .memo-box {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 18px;
-    margin-bottom: 18px;
-    box-shadow: 0 1px 3px rgba(20, 40, 70, .06);
+    margin-bottom: 24px; padding: 20px 24px 24px;
+    background: var(--surface-lowest);
+    border: 1px solid var(--outline-variant); border-radius: 12px;
   }
-  .memo-box h2 {
-    font-size: 1.05rem;
-    margin-bottom: 12px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .memo-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-  .memo-field label {
-    display: block;
-    font-size: .88rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-  .memo-row { display: flex; gap: 8px; }
-  .memo-row input {
-    flex: 1;
-    min-width: 0;
-    font-size: 1.15rem;
-    padding: 12px 14px;
-    border: 2px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    letter-spacing: .04em;
-  }
-  .memo-row input:focus { outline: none; border-color: var(--blue); }
-  .memo-row button {
-    flex-shrink: 0;
-    padding: 0 14px;
-    font-size: 1rem;
-    font-weight: 700;
-    border: none;
-    border-radius: 10px;
-    background: var(--blue);
-    color: #fff;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .memo-row button:hover { background: var(--blue-dark); }
-  .memo-hint { font-size: .82rem; color: var(--sub); margin-top: 10px; }
+  .memo-box h2 { margin-bottom: 24px; font-size: 1.125rem; font-weight: 500; line-height: 1.5; }
+  .memo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 20px; }
+  .memo-grid + .memo-field, .memo-hint + .memo-field { margin-top: 28px; }
 
-  .maker-result-list { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; }
-  .maker-result {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 12px;
-    cursor: pointer;
-    text-align: left;
-    font-family: inherit;
-    width: 100%;
-  }
-  .maker-result:hover { border-color: var(--blue); }
-  .maker-result .mr-info { flex: 1; min-width: 0; }
-  .maker-result .mr-name { font-weight: 700; font-size: .95rem; }
-  .maker-result .mr-maker { font-size: .8rem; color: var(--sub); }
-  .maker-result .mr-go {
-    flex-shrink: 0;
-    font-size: .78rem;
-    font-weight: 700;
-    padding: 5px 10px;
-    border-radius: 999px;
-    white-space: nowrap;
-  }
-  .maker-result.matched .mr-go { background: var(--blue-pale); color: var(--blue); }
-  .maker-result.unmatched .mr-go { background: var(--orange-pale); color: var(--orange); }
-
-  .action-btn {
-    display: block;
-    width: 100%;
-    margin-top: 12px;
-    padding: 12px;
-    font-size: 1rem;
-    font-weight: 700;
-    font-family: inherit;
-    border: none;
-    border-radius: 10px;
-    color: #fff;
-    cursor: pointer;
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  .action-btn.green { background: var(--green); }
-  .action-btn.green:hover { background: #157a3f; }
-  .action-btn.blue { background: var(--blue); }
-  .action-btn.blue:hover { background: var(--blue-dark); }
-
-  /* ---------- 絞り込み ---------- */
-  .filter-box { position: relative; margin-bottom: 24px; }
-  .filter-box .icon {
-    position: absolute; left: 14px; top: 50%;
-    transform: translateY(-50%);
-    display: flex; color: var(--sub);
+  /* アウトライン入力欄：ラベルは枠線の上に載せる */
+  .memo-field { position: relative; }
+  .memo-field > label {
+    position: absolute; top: -9px; left: 12px; z-index: 1;
+    padding: 0 4px;
+    background: var(--surface-lowest); color: var(--on-surface-variant);
+    font-size: .75rem; font-weight: 500; line-height: 1.3;
     pointer-events: none;
+  }
+  .memo-field:focus-within > label { color: var(--primary); }
+  .memo-row { display: flex; align-items: center; gap: 8px; }
+  .memo-row input {
+    flex: 1; min-width: 0; height: 56px; padding: 0 16px;
+    font: 400 1rem var(--font); letter-spacing: .01em; color: var(--on-surface);
+    background: transparent;
+    border: 1px solid var(--outline); border-radius: 4px;
+  }
+  .memo-row input::placeholder { color: var(--outline); }
+  .memo-row input:hover { border-color: var(--on-surface); }
+  .memo-row input:focus { outline: none; border-color: var(--primary); box-shadow: inset 0 0 0 1px var(--primary); }
+  .memo-row.actions { min-height: 56px; }
+  .memo-hint { margin-top: 12px; font-size: .8125rem; line-height: 1.7; color: var(--on-surface-variant); }
+
+  /* ---------- ボタン ---------- */
+  .btn {
+    position: relative; overflow: hidden;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    flex-shrink: 0; height: 40px; min-width: 88px; padding: 0 24px;
+    font: 500 .875rem/1 var(--font); letter-spacing: .01em; white-space: nowrap;
+    border: none; border-radius: 20px; cursor: pointer;
+    -webkit-appearance: none; appearance: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn svg { width: 18px; height: 18px; fill: currentColor; flex-shrink: 0; }
+  .btn::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit;
+    background: currentColor; opacity: 0; transition: opacity .15s;
+  }
+  .btn:hover::before { opacity: .08; }
+  .btn:focus-visible::before, .btn:active::before { opacity: .12; }
+  .btn.filled { background: var(--primary); color: var(--on-primary); }
+  .btn.tonal { background: var(--secondary-container); color: var(--on-secondary-container); }
+  .btn.outlined { background: transparent; color: var(--primary); box-shadow: inset 0 0 0 1px var(--outline); }
+  .btn.outlined.danger { color: var(--error); }
+  .btn.full { width: 100%; height: 48px; border-radius: 24px; font-size: .9375rem; }
+  .btn.wrap-text { white-space: normal; line-height: 1.3; min-height: 40px; height: auto; padding: 10px 16px; }
+  .action-btn { display: flex; margin-top: 16px; }
+  .memo-row.actions .btn { flex: 1; min-width: 0; }
+  .actions-row { display: flex; gap: 12px; margin-top: 16px; }
+  .actions-row .btn:first-child { flex: 1; }
+
+  /* ---------- 絞り込み（検索バー） ---------- */
+  .page-h2 { margin-bottom: 12px; font-size: 1.375rem; font-weight: 500; line-height: 1.5; }
+  .filter-box { position: relative; margin-bottom: 28px; }
+  .filter-box .icon {
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    display: flex; color: var(--on-surface-variant); pointer-events: none;
   }
   .filter-box input {
-    width: 100%;
-    font-size: 1.1rem;
-    padding: 14px 16px 14px 44px;
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    background: var(--card);
-    color: var(--text);
+    width: 100%; height: 56px; padding: 0 16px 0 52px;
+    font: 400 1rem var(--font); color: var(--on-surface);
+    background: var(--surface-high); border: none; border-radius: 28px;
   }
-  .filter-box input:focus { outline: none; border-color: var(--blue); }
+  .filter-box input::placeholder { color: var(--on-surface-variant); }
+  .filter-box input:focus { outline: none; background: var(--surface-lowest); box-shadow: inset 0 0 0 2px var(--primary); }
 
   /* ---------- セクション ---------- */
-  section { margin-bottom: 26px; }
-  .sec-head {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-  }
-  .sec-head h2 { font-size: 1.15rem; }
-  .badge {
-    font-size: .78rem;
-    font-weight: 700;
-    padding: 3px 12px;
-    border-radius: 999px;
-    white-space: nowrap;
-  }
-  .badge.fav { background: #fff3d6; color: #8a6400; }
-  .badge.generic { background: var(--green-pale); color: var(--green); }
-  .badge.brand { background: var(--blue-pale); color: var(--blue); }
-  .badge.contact { background: var(--orange-pale); color: var(--orange); }
-  .sec-desc { font-size: .85rem; color: var(--sub); margin: -6px 0 12px; }
-  .guide-h3 { font-size: 1rem; margin: 18px 0 6px; color: var(--text); }
+  section { margin-bottom: 32px; }
+  .sec-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 12px; }
+  .sec-head h2 { font-size: 1.25rem; font-weight: 500; line-height: 1.5; }
+  .badge { font-size: .8125rem; color: var(--on-surface-variant); }
+  .sec-desc { margin: 0 0 12px; font-size: .875rem; line-height: 1.7; color: var(--on-surface-variant); }
+  .guide-h3 { margin: 24px 0 6px; font-size: 1rem; font-weight: 500; line-height: 1.6; }
+  #how-to p, #about-site p { max-width: 46em; font-size: .9375rem; }
+  #about-site p + p { margin-top: 12px; }
+  #how-to .guide-h3 + p { margin-bottom: 0; }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 12px;
-  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
 
-  /* ---------- 会社カード ---------- */
+  /* ---------- 会社カード（リストアイテム） ---------- */
   .company {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-left: 5px solid var(--blue);
-    border-radius: 12px;
-    padding: 14px 14px;
-    text-decoration: none;
-    color: var(--text);
-    box-shadow: 0 1px 3px rgba(20, 40, 70, .06);
-    transition: box-shadow .15s, transform .15s;
+    position: relative; display: flex; align-items: center; gap: 8px;
+    min-height: 72px; padding: 12px 16px 12px 8px;
+    background: var(--surface-lowest);
+    border: 1px solid var(--outline-variant); border-radius: 12px;
+    color: var(--on-surface); text-decoration: none;
+    transition: background-color .15s, border-color .15s;
   }
-  .company:hover {
-    box-shadow: 0 4px 12px rgba(20, 40, 70, .14);
-    transform: translateY(-1px);
-  }
-  .company.generic { border-left-color: var(--green); }
-  .company.contact { border-left-color: var(--orange); }
+  .company:hover { background-image: linear-gradient(var(--hover), var(--hover)); border-color: var(--outline); }
+  .company:active { background-image: linear-gradient(var(--pressed), var(--pressed)); }
   .company .info { flex: 1; min-width: 0; }
-  .company .name { font-weight: 700; font-size: 1.08rem; }
-  .company .note { font-size: .8rem; color: var(--sub); margin-top: 2px; }
-  .company .open {
-    flex-shrink: 0;
-    font-size: .8rem;
-    font-weight: 700;
-    color: var(--blue);
-    background: var(--blue-pale);
-    padding: 6px 12px;
-    border-radius: 999px;
-    white-space: nowrap;
-  }
-  .company.contact .open { color: var(--orange); background: var(--orange-pale); }
+  .company .name { font-size: 1rem; font-weight: 500; line-height: 1.5; }
+  .company .note { margin-top: 2px; font-size: .8125rem; line-height: 1.55; color: var(--on-surface-variant); }
+  .company .open { flex-shrink: 0; display: flex; color: var(--primary); }
+  .company .open svg, .star-btn svg { width: 24px; height: 24px; fill: currentColor; }
   .star-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #ccd4de;
-    flex-shrink: 0;
-    padding: 2px 4px;
-    line-height: 1;
+    flex-shrink: 0; width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    background: none; border: none; border-radius: 50%; cursor: pointer;
+    color: var(--on-surface-variant);
   }
-  .star-btn:hover { color: var(--star); }
-  .star-btn.on { color: var(--star); }
+  .star-btn:hover { background: var(--hover); }
+  .star-btn .on-icon { display: none; }
+  .star-btn.on { color: var(--primary); }
+  .star-btn.on .on-icon { display: block; }
+  .star-btn.on .off-icon { display: none; }
 
-  .empty { color: var(--sub); font-size: .95rem; padding: 8px 4px; }
+  .empty { padding: 8px 4px; font-size: .875rem; color: var(--on-surface-variant); }
 
-  /* ---------- 報告書テーブル ---------- */
-  .report-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--card);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(20, 40, 70, .06);
-    font-size: .92rem;
+  /* ---------- 製品名の候補リスト ---------- */
+  .maker-result-list {
+    margin-top: 8px; max-height: 320px; overflow-y: auto;
+    background: var(--surface-lowest);
+    border: 1px solid var(--outline-variant); border-radius: 12px;
   }
-  .report-table th, .report-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--border);
-    text-align: left;
-    white-space: nowrap;
+  .maker-result {
+    display: flex; align-items: center; gap: 12px; width: 100%;
+    padding: 12px 16px;
+    font: inherit; color: inherit; text-align: left;
+    background: none; border: none; border-top: 1px solid var(--outline-variant); cursor: pointer;
   }
-  .report-table td.memo-cell { white-space: normal; min-width: 160px; }
-  .report-table th {
-    background: var(--blue-pale);
-    color: var(--blue);
-    font-size: .82rem;
+  .maker-result:first-child { border-top: none; }
+  .maker-result:hover { background-image: linear-gradient(var(--hover), var(--hover)); }
+  .maker-result:active { background-image: linear-gradient(var(--pressed), var(--pressed)); }
+  .maker-result .mr-info { flex: 1; min-width: 0; }
+  .maker-result .mr-name { font-size: .9375rem; font-weight: 500; }
+  .maker-result .mr-maker { font-size: .8125rem; color: var(--on-surface-variant); }
+  .maker-result .mr-go {
+    flex-shrink: 0; display: flex; align-items: center; gap: 4px;
+    font-size: .8125rem; font-weight: 500; white-space: nowrap;
   }
-  .report-table tbody tr:last-child td { border-bottom: none; }
-  .row-del {
-    background: none;
-    border: none;
-    color: #b23b3b;
-    font-size: .85rem;
-    font-weight: 700;
-    cursor: pointer;
-    padding: 4px 8px;
+  .maker-result .mr-go svg { width: 18px; height: 18px; fill: currentColor; }
+  .maker-result.matched .mr-go { color: var(--primary); }
+  .maker-result.unmatched .mr-go { color: var(--on-surface-variant); }
+
+  /* ---------- 報告書 ---------- */
+  .kind-toggle {
+    display: inline-flex; margin-bottom: 24px;
+    border: 1px solid var(--outline); border-radius: 20px; overflow: hidden;
   }
   .kind-btn {
-    flex: 1;
-    padding: 10px;
-    font-size: .95rem;
-    font-weight: 700;
-    font-family: inherit;
-    border: none;
-    border-radius: 10px;
-    background: #d7dee7;
-    color: var(--sub);
-    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    min-width: 128px; height: 40px; padding: 0 20px;
+    font: 500 .875rem var(--font); color: var(--on-surface);
+    background: none; border: none; border-left: 1px solid var(--outline); cursor: pointer;
   }
-  .kind-btn.active { background: var(--blue); color: #fff; }
+  .kind-btn:first-child { border-left: none; }
+  .kind-btn:hover { background-image: linear-gradient(var(--hover), var(--hover)); }
+  .kind-btn.active { background-color: var(--secondary-container); color: var(--on-secondary-container); }
+  .kind-btn.active::before {
+    content: ""; width: 18px; height: 18px; background: currentColor;
+    -webkit-mask: var(--icon-check) center / contain no-repeat; mask: var(--icon-check) center / contain no-repeat;
+  }
+
+  .table-wrap {
+    overflow-x: auto; background: var(--surface-lowest);
+    border: 1px solid var(--outline-variant); border-radius: 12px;
+  }
+  .table-wrap:has(tbody:empty) { display: none; }
+  .report-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+  .report-table th, .report-table td {
+    padding: 12px 16px; text-align: left; white-space: nowrap;
+    border-bottom: 1px solid var(--outline-variant);
+  }
+  .report-table th { background: var(--surface-low); font-size: .8125rem; font-weight: 500; color: var(--on-surface-variant); }
+  .report-table td.memo-cell { min-width: 160px; white-space: normal; }
+  .report-table tbody tr:last-child td { border-bottom: none; }
+  .report-table tbody tr:hover { background: var(--surface-low); }
   .kind-badge {
-    font-size: .78rem;
-    font-weight: 700;
-    padding: 2px 10px;
-    border-radius: 999px;
-    white-space: nowrap;
+    display: inline-block; padding: 2px 10px; border-radius: 8px;
+    font-size: .75rem; font-weight: 500; line-height: 1.6; white-space: nowrap;
   }
-  .kind-badge.expiry { background: var(--blue-pale); color: var(--blue); }
-  .kind-badge.identify { background: var(--orange-pale); color: var(--orange); }
+  .kind-badge.expiry { background: var(--primary-container); color: var(--on-primary-container); }
+  .kind-badge.identify { background: var(--warn-container); color: var(--on-warn-container); }
+  .row-del {
+    padding: 6px 12px; font: 500 .8125rem var(--font); color: var(--error);
+    background: none; border: none; border-radius: 16px; cursor: pointer;
+  }
+  .row-del:hover { background: rgba(186, 26, 26, .08); }
 
-  /* ---------- 補足 ---------- */
+  /* ---------- 補足（バナー） ---------- */
+  :root {
+    --icon-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+    --icon-info: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z'/%3E%3C/svg%3E");
+    --icon-warning: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z'/%3E%3C/svg%3E");
+  }
   .gs1-note {
-    background: var(--green-pale);
-    border: 1px solid #bfe3cd;
-    border-radius: 12px;
-    padding: 16px 18px;
-    font-size: .9rem;
-    margin-top: 8px;
+    margin-top: 8px; padding: 16px 20px;
+    background: var(--surface-low); border-radius: 12px;
+    font-size: .875rem; line-height: 1.75; color: var(--on-surface);
   }
-  .gs1-note strong { display: block; margin-bottom: 4px; color: var(--green); }
-  .gs1-note.warn { background: var(--orange-pale); border-color: #f0cf9e; }
-  .gs1-note.warn strong { color: var(--orange); }
-  footer { margin-top: 18px; font-size: .8rem; color: var(--sub); }
+  .gs1-note strong {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+    font-size: .9375rem; font-weight: 500; color: var(--primary);
+  }
+  .gs1-note strong::before {
+    content: ""; flex-shrink: 0; width: 20px; height: 20px; background: currentColor;
+    -webkit-mask: var(--icon-info) center / contain no-repeat; mask: var(--icon-info) center / contain no-repeat;
+  }
+  .gs1-note.warn { background: var(--warn-container); color: var(--on-warn-container); }
+  .gs1-note.warn strong { color: var(--on-warn-container); }
+  .gs1-note.warn strong::before { -webkit-mask-image: var(--icon-warning); mask-image: var(--icon-warning); }
 
-  /* ---------- トースト ---------- */
+  footer { margin-top: 24px; font-size: .8125rem; line-height: 1.85; color: var(--on-surface-variant); }
+
+  /* ---------- よくある質問 ---------- */
+  .faq { background: var(--surface-lowest); border: 1px solid var(--outline-variant); border-radius: 12px; }
+  .qa { padding: 20px 24px; border-top: 1px solid var(--outline-variant); }
+  .qa:first-child { border-top: none; }
+  .qa h3 { font-size: 1rem; font-weight: 500; line-height: 1.6; }
+  .qa p { margin-top: 6px; font-size: .9375rem; color: var(--on-surface-variant); }
+
+  /* ---------- スナックバー ---------- */
   .toast {
-    position: fixed;
-    bottom: calc(28px + env(safe-area-inset-bottom));
-    left: 50%;
-    transform: translateX(-50%);
-    background: #223047;
-    color: #fff;
-    padding: 12px 24px;
-    border-radius: 999px;
-    font-size: .95rem;
-    box-shadow: 0 4px 16px rgba(0,0,0,.25);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .25s;
-    max-width: 90vw;
+    position: fixed; z-index: 50;
+    left: 16px; bottom: calc(16px + env(safe-area-inset-bottom));
+    max-width: min(560px, calc(100vw - 32px));
+    padding: 14px 16px;
+    font-size: .875rem; line-height: 1.5;
+    background: var(--inverse-surface); color: var(--inverse-on-surface);
+    border-radius: 4px;
+    box-shadow: 0 3px 5px -1px rgba(0, 0, 0, .2), 0 6px 10px 0 rgba(0, 0, 0, .14), 0 1px 18px 0 rgba(0, 0, 0, .12);
+    opacity: 0; transform: translateY(8px); pointer-events: none;
+    transition: opacity .2s, transform .2s;
   }
-  .toast.show { opacity: 1; }
+  .toast.show { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
 
   /* ---------- スマホ ---------- */
   @media (max-width: 640px) {
-    html { font-size: 15px; }
-    .steps { grid-template-columns: 1fr; gap: 8px; }
-    .step { padding: 10px 14px; align-items: center; }
+    h1 { font-size: 1.25rem; }
+    .tab-btn { max-width: none; }
+    .steps { grid-template-columns: 1fr; }
+    .step { padding: 12px 16px; align-items: center; }
+    .step + .step { border-left: none; border-top: 1px solid var(--outline-variant); }
     .step .d { display: none; }
+    .memo-box { padding: 20px 16px; }
     .memo-grid { grid-template-columns: 1fr; }
     .grid { grid-template-columns: 1fr; }
+    .qa { padding: 16px; }
+    .toast { right: 16px; max-width: none; }
   }
+
+  /* 先頭にスターの無いカード／直前に操作ボタンがあるバナーの余白調整 */
+  .company .info:first-child { padding-left: 8px; }
+  .actions-row + .gs1-note { margin-top: 24px; }
 </style>
 </head>
 <body>
@@ -478,7 +454,7 @@
   <div class="inner">
     <h1>
       <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
-        <rect width="64" height="64" rx="14" fill="#ffffff" fill-opacity=".16"/>
+        <rect width="64" height="64" rx="14" fill="#0b6bcb"/>
         <g transform="translate(32,32) rotate(-45)">
           <rect x="-18" y="-8" width="36" height="16" rx="8" fill="#ffffff"/>
           <rect x="-18" y="-8" width="18" height="16" rx="8" fill="#bcdcff"/>
@@ -523,7 +499,7 @@
         <label for="drug">製品名</label>
         <div class="memo-row">
           <input id="drug" type="text" placeholder="例: アムロジピン錠5mg" autocomplete="off">
-          <button data-copy="drug">コピー</button>
+          <button class="btn tonal" data-copy="drug"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>コピー</button>
         </div>
         <div id="makerLookupResults"></div>
       </div>
@@ -531,24 +507,22 @@
         <label for="lot">ロット番号（製造番号）</label>
         <div class="memo-row">
           <input id="lot" type="text" placeholder="例: A123B" autocomplete="off">
-          <button data-copy="lot">コピー</button>
+          <button class="btn tonal" data-copy="lot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>コピー</button>
         </div>
       </div>
     </div>
-    <div class="memo-field" style="margin-top:14px;">
+    <div class="memo-field">
       <label for="drugExpiry">確認した使用期限（任意）</label>
       <div class="memo-row"><input id="drugExpiry" type="text" placeholder="例: 2027-03" autocomplete="off"></div>
     </div>
     <p class="memo-hint" id="makerLookupHint">※ 製品名を2文字以上入力すると、厚生労働省の薬価基準収載品目リスト（約1万品目）からメーカー候補が表示されます。多くのメーカーは「製品名＋ロット番号」のセット入力が必要です。先にコピーしておくと、開いた先で貼り付けるだけで検索できます。</p>
-    <button id="toReportBtn" class="action-btn green">この製品を報告書に追加</button>
+    <button id="toReportBtn" class="btn filled full action-btn">この製品を報告書に追加</button>
   </div>
 
-  <h2 style="margin-bottom:12px;">製薬会社から検索する</h2>
+  <h2 class="page-h2">製薬会社から検索する</h2>
 
   <div class="filter-box">
-    <span class="icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.2" y2="16.2"/></svg>
-    </span>
+    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></span>
     <input id="filter" type="search" placeholder="会社名で絞り込み（例: さわい、トーワ、takeda）" autocomplete="off">
   </div>
 
@@ -612,23 +586,22 @@
         <label for="code">識別コード（刻印・印字）</label>
         <div class="memo-row">
           <input id="code" type="text" placeholder="例: TW483" autocomplete="off">
-          <button data-copy="code">コピー</button>
+          <button class="btn tonal" data-copy="code"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>コピー</button>
         </div>
       </div>
       <div class="memo-field">
-        <label>&nbsp;</label>
-        <div class="memo-row">
-          <button id="kigoBtn" style="flex:1; min-width:0; padding:12px 8px; white-space:normal; line-height:1.3;">ハイパー薬事典で検索</button>
-          <button id="googleBtn" style="flex:1; min-width:0; padding:12px 8px; white-space:normal; line-height:1.3; background:#5f6b7a;">Googleで検索</button>
+        <div class="memo-row actions">
+          <button id="kigoBtn" class="btn filled wrap-text">ハイパー薬事典で検索</button>
+          <button id="googleBtn" class="btn outlined wrap-text">Googleで検索</button>
         </div>
       </div>
     </div>
     <p class="memo-hint">※ 識別コードは錠剤本体の刻印またはPTPシートの印字にあります。英字と数字の1組（例: TW483、KW 231）を半角で入力してください。本体（錠剤）側のアルファベットを優先。</p>
-    <div class="memo-field" style="margin-top:14px;">
+    <div class="memo-field">
       <label for="identifyConfirmedName">確認した薬品名（任意）</label>
       <div class="memo-row"><input id="identifyConfirmedName" type="text" placeholder="例: ロキソプロフェンNa錠60mg「トーワ」" autocomplete="off"></div>
     </div>
-    <button id="toReportBtnIdentify" class="action-btn green">この鑑別結果を報告書に追加</button>
+    <button id="toReportBtnIdentify" class="btn filled full action-btn">この鑑別結果を報告書に追加</button>
   </div>
 
   <div class="memo-box">
@@ -638,7 +611,7 @@
         <label for="kanaName">薬の名前（全角カタカナ・漢字で3文字以上）</label>
         <div class="memo-row">
           <input id="kanaName" type="text" placeholder="例: ロキソニン" autocomplete="off">
-          <button id="kanaBtn">検索</button>
+          <button id="kanaBtn" class="btn filled">検索</button>
         </div>
       </div>
     </div>
@@ -663,28 +636,28 @@
           <div class="name">PMDA 添付文書検索（基本）</div>
           <div class="note">公的DB。名前は「一般名・販売名」欄、識別コードは検索項目を「組成・性状」にして入力</div>
         </div>
-        <div class="open">検索ページへ ▶</div>
+        <div class="open" title="検索ページへ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg><span class="visually-hidden">検索ページへ</span></div>
       </a>
       <a class="company" href="http://www.jah.ne.jp/~kako/frame_dwm_search.html" target="_blank" rel="noopener">
         <div class="info">
           <div class="name">ハイパー薬事典（おくすり110番）</div>
           <div class="note">記号・名前から検索。上の入力欄からボタン一発でも検索可能</div>
         </div>
-        <div class="open">検索ページへ ▶</div>
+        <div class="open" title="検索ページへ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg><span class="visually-hidden">検索ページへ</span></div>
       </a>
       <a class="company" href="https://www.kegg.jp/medicus-bin/search_drug" target="_blank" rel="noopener">
         <div class="info">
           <div class="name">KEGG MEDICUS</div>
           <div class="note">添付文書の全文から検索できる統合データベース</div>
         </div>
-        <div class="open">検索ページへ ▶</div>
+        <div class="open" title="検索ページへ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg><span class="visually-hidden">検索ページへ</span></div>
       </a>
       <a class="company" href="https://www.data-index.co.jp/medsearch/ethicaldrugs/" target="_blank" rel="noopener">
         <div class="info">
           <div class="name">データインデックス 医薬品検索</div>
           <div class="note">識別コード欄あり。画像付きで確認しやすい</div>
         </div>
-        <div class="open">検索ページへ ▶</div>
+        <div class="open" title="検索ページへ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg><span class="visually-hidden">検索ページへ</span></div>
       </a>
     </div>
   </section>
@@ -717,7 +690,7 @@
 
   <div class="memo-box">
     <h2>確認結果を記録する</h2>
-    <div class="kind-toggle" style="display:flex; gap:8px; margin-bottom:16px;">
+    <div class="kind-toggle">
       <button type="button" class="kind-btn active" data-kind="expiry">使用期限確認</button>
       <button type="button" class="kind-btn" data-kind="identify">錠剤鑑別</button>
     </div>
@@ -735,17 +708,17 @@
         <div class="memo-row"><input id="repExpiry" type="text" placeholder="例: 2027-03" autocomplete="off"></div>
       </div>
     </div>
-    <div class="memo-field" style="margin-top:14px;">
+    <div class="memo-field">
       <label for="repMemo">メモ（任意）</label>
       <div class="memo-row"><input id="repMemo" type="text" placeholder="例: 残薬調整で持参、シート判読困難のため名前検索で確認" autocomplete="off"></div>
     </div>
-    <button id="addReportBtn" class="action-btn blue">＋ 一覧に追加</button>
+    <button id="addReportBtn" class="btn filled full action-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>一覧に追加</button>
     <p class="memo-hint" id="repHint">※ 使用期限は各社サイト・チャットボットで確認した結果をそのまま入力してください（自動取得はできません）。</p>
   </div>
 
   <section>
     <div class="sec-head"><h2>確認済み一覧</h2><span class="badge brand" id="reportCount">0件</span></div>
-    <div style="overflow-x:auto;">
+    <div class="table-wrap">
       <table class="report-table">
         <thead>
           <tr><th>種別</th><th>製品名／薬品名</th><th>ロット番号／識別コード</th><th>確認結果</th><th>メモ</th><th class="noprint"></th></tr>
@@ -756,12 +729,12 @@
     <p class="empty" id="reportEmpty">まだ追加された項目はありません</p>
   </section>
 
-  <div class="memo-row" style="margin-top:8px;">
-    <button id="printReportBtn" style="flex:1; min-width:0; padding:14px 8px; white-space:normal; line-height:1.3;">報告書を印刷 / PDF保存</button>
-    <button id="clearReportBtn" style="background:#b23b3b; padding:14px 12px; white-space:normal;">全て削除</button>
+  <div class="actions-row">
+    <button id="printReportBtn" class="btn filled"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>報告書を印刷 / PDF保存</button>
+    <button id="clearReportBtn" class="btn outlined danger">全て削除</button>
   </div>
 
-  <div class="gs1-note" style="margin-top:20px;">
+  <div class="gs1-note">
     <strong>このリストについて</strong>
     入力した内容はこの端末のブラウザにのみ保存されます（他の端末や他の人とは共有されません）。印刷ボタンを押すとブラウザの印刷機能が開き、そこで「PDFに保存」を選べばPDFファイルとして保存できます。
   </div>
@@ -773,50 +746,58 @@
 <div class="wrap">
   <section id="how-to">
     <div class="sec-head"><h2>薬の使用期限の調べ方</h2></div>
-    <p class="sec-desc" style="margin-bottom:14px;">
+    <p class="sec-desc">
       持参薬の使用期限がわからないとき、どこを見ればいいか迷う方向けに、調べ方の手順をまとめました。
     </p>
 
     <h3 class="guide-h3">① ロット番号（製造番号）はどこに書いてある？</h3>
-    <p class="sec-desc" style="margin-bottom:14px;">
+    <p class="sec-desc">
       PTPシート（1錠ずつ包装されているシート）の場合、シートの端に近い部分に、英数字の組み合わせ（例: A123B）でロット番号・製造番号が印字されています。箱がお手元にある場合は、箱の側面や底面にも同じ番号が記載されています。
     </p>
 
     <h3 class="guide-h3">② バーコードで調べられる場合</h3>
-    <p class="sec-desc" style="margin-bottom:14px;">
+    <p class="sec-desc">
       医薬品の箱（販売包装）に印刷されているGS1バーコードには、有効期限とロット番号がそのまま入っていることがあります。専用のバーコードリーダーやスマホアプリで読み取れば、その場で使用期限がわかります。ただし、PTPシート単体のバーコードには有効期限が入っていないことが多く、その場合は次の方法で調べます。
     </p>
 
     <h3 class="guide-h3">③ ロット番号から使用期限を調べる方法（ロット別使用期限検索）</h3>
-    <p class="sec-desc" style="margin-bottom:14px;">
+    <p class="sec-desc">
       バーコードで分からない場合は、製薬会社ごとの「使用期限検索」ページで、製品名とロット番号を入力して調べます。会社によって「製品名＋ロット番号のセット入力必須」「ロット番号のみでも可」など検索方法が異なりますが、下の使用期限検索タブから製薬会社を選べば、コピー＆貼り付けだけで調べられます。
     </p>
   </section>
 
   <section id="about-site">
     <div class="sec-head"><h2>このサイトについて</h2></div>
-    <p class="sec-desc" style="margin-bottom:14px;">
+    <p class="sec-desc">
       「持参薬チェック」は、薬局・病院薬剤師などの医療従事者が残薬調整の際に持参薬（PTPシート）を確認するための無料ツールです。<strong>医薬品使用期限検索</strong>と<strong>錠剤鑑別</strong>という2つの確認業務を、1つのサイトにまとめました。
     </p>
-    <p class="sec-desc" style="margin-bottom:14px;">
+    <p class="sec-desc">
       医薬品使用期限検索は、ロット番号（製造番号）から使用期限を調べる全国の製薬会社の検索ページへのリンク集です。会社ごとに検索方法や入力ルールが異なるため、各社の注意点もあわせて掲載しています。錠剤鑑別は、錠剤の識別コード・刻印から薬品名を調べられるPMDA添付文書検索やハイパー薬事典などのデータベースへのリンク集です。
     </p>
-    <p class="sec-desc" style="margin-bottom:14px;">
+    <p class="sec-desc">
       確認した結果はその場でPDF報告書として印刷・保存できます。会員登録は不要で、完全無料でご利用いただけます。
     </p>
   </section>
 
   <section id="faq">
     <div class="sec-head"><h2>よくある質問</h2></div>
-    <div class="memo-box">
-      <p style="font-weight:700;">Q. 使用期限はこのサイトで自動的にわかりますか？</p>
-      <p class="sec-desc" style="margin:4px 0 14px;">A. いいえ。各製薬会社は使用期限を公開APIで提供していないため、このサイトは各社の使用期限検索ページへのリンク集です。製品名とロット番号をコピーして、開いたページで検索してください。</p>
-      <p style="font-weight:700;">Q. 錠剤の識別コードから薬品名を調べられますか？</p>
-      <p class="sec-desc" style="margin:4px 0 14px;">A. はい。錠剤鑑別タブから、PMDA添付文書検索やハイパー薬事典などのデータベースに、識別コードや薬の名前をワンタップで検索できます。</p>
-      <p style="font-weight:700;">Q. 確認した結果を報告書として保存できますか？</p>
-      <p class="sec-desc" style="margin:4px 0 14px;">A. はい。報告書タブで確認結果（製品名・ロット番号・使用期限・鑑別結果など）を記録し、ブラウザの印刷機能からPDFとして保存・印刷できます。</p>
-      <p style="font-weight:700;">Q. 利用は無料ですか？会員登録は必要ですか？</p>
-      <p class="sec-desc" style="margin:4px 0 0;">A. 完全に無料で、会員登録も不要です。お気に入りや報告書の内容はお使いの端末のブラウザにのみ保存されます。</p>
+    <div class="faq">
+      <div class="qa">
+        <h3>Q. 使用期限はこのサイトで自動的にわかりますか？</h3>
+        <p>A. いいえ。各製薬会社は使用期限を公開APIで提供していないため、このサイトは各社の使用期限検索ページへのリンク集です。製品名とロット番号をコピーして、開いたページで検索してください。</p>
+      </div>
+      <div class="qa">
+        <h3>Q. 錠剤の識別コードから薬品名を調べられますか？</h3>
+        <p>A. はい。錠剤鑑別タブから、PMDA添付文書検索やハイパー薬事典などのデータベースに、識別コードや薬の名前をワンタップで検索できます。</p>
+      </div>
+      <div class="qa">
+        <h3>Q. 確認した結果を報告書として保存できますか？</h3>
+        <p>A. はい。報告書タブで確認結果（製品名・ロット番号・使用期限・鑑別結果など）を記録し、ブラウザの印刷機能からPDFとして保存・印刷できます。</p>
+      </div>
+      <div class="qa">
+        <h3>Q. 利用は無料ですか？会員登録は必要ですか？</h3>
+        <p>A. 完全に無料で、会員登録も不要です。お気に入りや報告書の内容はお使いの端末のブラウザにのみ保存されます。</p>
+      </div>
     </div>
   </section>
 </div>
@@ -969,6 +950,11 @@ const brandGrid = document.getElementById("brandGrid");
 const contactGrid = document.getElementById("contactGrid");
 const filterInput = document.getElementById("filter");
 
+const svgIcon = (cls, d) => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>`;
+const ICON_STAR = svgIcon("off-icon", "M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4l-3.76 2.27 1-4.28-3.32-2.88 4.38-.38L12 6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z") + svgIcon("on-icon", "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z");
+const ICON_OPEN = svgIcon("", "M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z");
+const ICON_ARROW = svgIcon("", "M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z");
+
 function companyUrl(c) {
   if (c.mode === "google") {
     const q = encodeURIComponent(c.query || `${c.name} 使用期限検索`);
@@ -986,12 +972,12 @@ function card(c) {
   const isFav = favs.has(c.name);
   const openLabel = c.mode === "google" ? "Googleで検索" : (c.cat === "contact" ? "問い合わせへ" : "検索ページへ");
   a.innerHTML = `
-    <button class="star-btn ${isFav ? "on" : ""}" aria-label="お気に入り" title="お気に入りに登録">★</button>
+    <button class="star-btn ${isFav ? "on" : ""}" aria-label="お気に入り" aria-pressed="${isFav}" title="${isFav ? "お気に入りを解除" : "お気に入りに登録"}">${ICON_STAR}</button>
     <div class="info">
       <div class="name">${c.name}</div>
       ${c.note ? `<div class="note">${c.note}</div>` : ""}
     </div>
-    <div class="open">${openLabel} ▶</div>`;
+    <div class="open" title="${openLabel}">${ICON_OPEN}<span class="visually-hidden">${openLabel}</span></div>`;
   a.querySelector(".star-btn").addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -1075,7 +1061,7 @@ function renderMakerResults(query) {
         <div class="mr-name">${escapeHtml(dName)}</div>
         <div class="mr-maker">製造販売元: ${escapeHtml(dMaker)}</div>
       </div>
-      <div class="mr-go">${company ? "コピー＆検索ページへ ▶" : "未登録"}</div>`;
+      <div class="mr-go">${company ? `コピー＆検索ページへ${ICON_ARROW}` : "未登録"}</div>`;
     btn.addEventListener("click", () => {
       navigator.clipboard.writeText(dName).catch(() => {});
       document.getElementById("drug").value = dName;
