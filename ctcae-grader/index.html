@@ -297,8 +297,8 @@ footer p{margin-top:6px}
   </section>
 
   <footer>
-    <p><b>規準</b>：有害事象共通用語規準 v5.0 日本語訳 JCOG 版（CTCAE v5.0 - JCOG）、
-      MedDRA/J v28.1 対応、2025年9月1日版。全 837 項目を同 PDF から転記。</p>
+    <p><b>規準</b>：有害事象共通用語規準 v5.0 日本語訳JCOG版より引用（CTCAE v5.0 - JCOG、
+      MedDRA/J v28.1 対応、2025年9月1日版）。全 837 項目を同 PDF から転記。</p>
     <p><b>基準範囲</b>：日本における主要な臨床検査項目の共用基準範囲（JCCLS 共用基準範囲）、
       2022年10月1日版。表1-1 の値を既定値として使用。</p>
     <p>ブラウザ内でのみ動作し、外部への送信は行いません。医療機器ではありません。</p>
@@ -923,7 +923,7 @@ function renderSummary() {
   }
   const max = Math.max(...rows.map((r) => r.grade));
   lines.push(`最高グレード：${GRADE_LABEL[max]}`);
-  lines.push("規準：CTCAE v5.0 - JCOG（MedDRA/J v28.1 対応、2025年9月1日版）");
+  lines.push("規準：有害事象共通用語規準 v5.0 日本語訳JCOG版より引用（MedDRA/J v28.1 対応、2025年9月1日版）");
   if (rows.some((r) => LAB_BY_CODE[r.it.code])) {
     lines.push("基準範囲：JCCLS 共用基準範囲（2022年10月1日版）※書き換えた項目を除く");
   }
