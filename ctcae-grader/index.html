@@ -4,10 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="color-scheme" content="light">
-<title>CTCAE 検索・グレード判定｜医療従事者向け</title>
-<meta name="description" content="CTCAE v5.0 - JCOG の全837項目を SOC 日本語・Term 日本語で検索し、Grade を確認・記録できる医療従事者向けツール。検査値からの自動判定は JCCLS 共用基準範囲を既定値に使用。レジメン・薬剤名から関連する有害事象を引けます。">
+<title>CTCAE v5.0 日本語 検索・Grade判定ツール｜有害事象の検索と検査値の自動判定【医療従事者向け・無料】</title>
+<meta name="description" content="CTCAE v5.0（JCOG日本語訳）全837項目を日本語で検索し、有害事象のGrade 1〜5を確認できる無料ツール。白血球・好中球・AST・ALTなど検査値からGradeを自動判定し、抗がん剤レジメンから関連する副作用も引けます。医療従事者向け。">
+<meta name="keywords" content="CTCAE,CTCAE v5.0,CTCAE 日本語,有害事象共通用語規準,JCOG,Grade判定,グレード判定,副作用 グレード,抗がん剤 副作用,レジメン,検査値 自動判定">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://jisanyaku-check.com/ctcae-grader/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://jisanyaku-check.com/ctcae-grader/">
+<meta property="og:site_name" content="持参薬チェック">
+<meta property="og:title" content="CTCAE v5.0 日本語 検索・Grade判定ツール【医療従事者向け・無料】">
+<meta property="og:description" content="CTCAE v5.0（JCOG日本語訳）全837項目を日本語で検索し、検査値からGradeを自動判定。抗がん剤レジメンの副作用も引けます。">
+<meta property="og:image" content="https://jisanyaku-check.com/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CTCAE v5.0 日本語 検索・Grade判定ツール【医療従事者向け・無料】">
+<meta name="twitter:description" content="CTCAE v5.0（JCOG日本語訳）全837項目を日本語で検索し、検査値からGradeを自動判定。">
+<meta name="twitter:image" content="https://jisanyaku-check.com/ogp.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"CTCAE 検索・グレード判定","alternateName":["CTCAE v5.0 日本語 Grade判定ツール","CTCAEグレード判定"],"url":"https://jisanyaku-check.com/ctcae-grader/","description":"CTCAE v5.0（JCOG日本語訳）全837項目を日本語で検索し、有害事象のGradeを確認・自動判定する医療従事者向けの無料Webツール。","applicationCategory":"MedicalApplication","operatingSystem":"Web","inLanguage":"ja","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"audience":{"@type":"MedicalAudience","audienceType":"医療従事者"},"author":{"@type":"Person","name":"高嶋 貫多"}}
+</script>
 <style>
 /* ---------- Material Design 3 のカラーロール ---------- */
 :root {
@@ -34,6 +49,7 @@ body{font-family:Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic UI",Meiryo,system
 :focus-visible{outline:3px solid var(--primary);outline-offset:2px;border-radius:var(--r-xs)}
 
 .top{background:var(--surface-c);padding:20px 0 18px}
+.gate-about{font-size:.85rem;color:var(--on-surface-variant)}
 .top h1{font-size:1.5rem;font-weight:400;line-height:1.33}
 .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .tag{font-size:.75rem;font-weight:500;padding:4px 10px;border-radius:var(--r-sm);white-space:nowrap}
@@ -185,6 +201,9 @@ footer p{margin-top:6px}
     <h2 id="gateTitle">医療従事者向けの情報です</h2>
     <p>このツールは、CTCAE v5.0 の Grade 判定を補助するための<b>医療従事者向け</b>のものです。
       一般の方への情報提供を目的としたものではありません。</p>
+    <p class="gate-about">CTCAE v5.0 日本語訳 JCOG 版（有害事象共通用語規準）の全837項目を日本語で検索し、
+      有害事象の Grade 1〜5 を確認できます。白血球・好中球・血小板・AST・ALT・クレアチニンなどの検査値からの
+      Grade 自動判定と、抗がん剤レジメンから関連する副作用を引く機能があります。無料で、入力した内容は外部へ送信されません。</p>
     <p>医療関係者の方は職種を以下よりお選びください。</p>
     <div class="gate-occ">
       <button type="button" class="btn gate-occ-btn" data-gate-yes>医師（勤務医）</button>
